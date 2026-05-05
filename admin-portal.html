@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Portal — BioLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1a6b3c;--green-light:#2d9e5f;--green-pale:#e8f5ee;--amber:#e8a020;--dark:#0e1a14;--text:#1c2e22;--muted:#6b8a74;--white:#fafdf9;--card:#fff;--border:#d0e8d9;--danger:#c0392b;--sw:240px}
+body{font-family:'DM Sans',sans-serif;background:#f0f7f2;color:var(--text);min-height:100vh}
+
+/* LOGIN */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 80% 60% at 50% 0%,#c8ebd8,transparent 60%),var(--white)}
+.login-box{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:52px 48px;width:440px;max-width:95vw;box-shadow:0 20px 60px rgba(26,107,60,.1)}
+.logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--green)}.logo span{color:var(--amber)}
+.subtitle{font-size:.92rem;color:var(--muted);margin-bottom:36px;margin-top:4px}
+.fg{margin-bottom:18px}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--text);margin-bottom:7px;letter-spacing:.05em;text-transform:uppercase}
+input,select,textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.92rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+textarea{resize:vertical;min-height:100px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap}
+.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:var(--green-light)}
+.btn-danger{background:var(--danger);color:#fff;font-size:.8rem;padding:7px 13px}.btn-danger:hover{opacity:.85}
+.btn-secondary{background:var(--green-pale);color:var(--green);border:1px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+.btn-warn{background:#fff3cd;color:#856404;border:1px solid #ffc107;font-size:.8rem;padding:7px 13px}
+.btn-full{width:100%}
+.err{color:var(--danger);font-size:.82rem;margin-top:8px}
+
+/* SHELL */
+#app{display:none;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sw);background:var(--dark);display:flex;flex-direction:column;padding:28px 0;z-index:50}
+.sidebar .logo{padding:0 24px;margin-bottom:4px}
+.role-badge{font-size:.7rem;color:#6b9a7b;padding:0 24px;margin-bottom:32px;text-transform:uppercase;letter-spacing:.08em}
+.ns{font-size:.65rem;color:#4a6e57;text-transform:uppercase;letter-spacing:.1em;padding:0 24px;margin-bottom:8px;margin-top:20px}
+.ni{display:flex;align-items:center;gap:12px;padding:11px 24px;color:#9dbda8;font-size:.88rem;font-weight:500;cursor:pointer;transition:all .18s;border-left:3px solid transparent;user-select:none}
+.ni:hover{color:#fff;background:rgba(255,255,255,.05)}
+.ni.active{color:#fff;background:rgba(45,158,95,.15);border-left-color:var(--green-light)}
+.ni .ic{font-size:1rem;width:20px;text-align:center}
+.sfooter{margin-top:auto;padding:20px 24px;border-top:1px solid rgba(255,255,255,.07)}
+.sfooter button{background:none;border:none;color:#6b9a7b;font-family:inherit;font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:8px}
+.sfooter button:hover{color:#fff}
+
+.main{margin-left:var(--sw);padding:40px;min-height:100vh}
+.page{display:none}.page.active{display:block}
+.ph{margin-bottom:32px}.ph h1{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700}
+.ph p{color:var(--muted);font-size:.9rem;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:24px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
+.sv{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--green)}
+.sl{font-size:.78rem;color:var(--muted);margin-top:4px}
+
+/* Table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead tr{border-bottom:2px solid var(--border)}
+th{text-align:left;padding:10px 14px;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+td{padding:12px 14px;border-bottom:1px solid #f0f7f2;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fdf9}
+.bc{background:var(--green-pale);color:var(--green);padding:3px 10px;border-radius:100px;font-size:.73rem;font-weight:600}
+.bt{background:#fff5e0;color:#a06c00;padding:3px 10px;border-radius:100px;font-size:.73rem;font-weight:600}
+.ba{background:#d4edda;color:#155724;padding:3px 10px;border-radius:100px;font-size:.73rem;font-weight:600}
+.bi{background:#f8d7da;color:#721c24;padding:3px 10px;border-radius:100px;font-size:.73rem;font-weight:600}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Tabs */
+.ctabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.ctab{padding:7px 16px;border-radius:100px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .18s}
+.ctab:hover{border-color:var(--green);color:var(--green)}
+.ctab.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* Modal */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.mbg.open{display:flex}
+.modal{background:#fff;border-radius:20px;padding:36px;width:580px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.15)}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:24px}
+.mf{display:flex;gap:12px;margin-top:24px;justify-content:flex-end}
+
+/* Options */
+.or{display:flex;gap:10px;margin-bottom:10px;align-items:center}
+.or input{flex:1}
+.cbtn{padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:all .18s}
+.cbtn.sel{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* Progress */
+.pbw{background:#e8f5ee;border-radius:100px;height:8px;overflow:hidden;margin-top:4px}
+.pb{height:100%;background:var(--green);border-radius:100px;transition:width .5s}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.rr:last-child{border-bottom:none}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty .ei{font-size:3rem;margin-bottom:16px}
+
+.toast{position:fixed;bottom:28px;right:28px;background:var(--dark);color:#fff;padding:14px 22px;border-radius:12px;font-size:.88rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.sidebar{width:200px}.main{margin-left:200px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="logo">Bio<span>Learn</span></div>
+    <div class="subtitle">Admin Portal — Sign In</div>
+    <div class="fg"><label>Email / Username</label><input type="text" id="lu" placeholder="Enter admin email"></div>
+    <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="••••••••"></div>
+    <p class="err" id="le"></p>
+    <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="doLogin()">Sign In to Admin Portal</button>
+    <p style="text-align:center;margin-top:18px;font-size:.82rem;color:var(--muted)"><a href="index.html" style="color:var(--green)">← Back to Home</a></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="logo">Bio<span>Learn</span></div>
+    <div class="role-badge">Admin Portal</div>
+    <div class="ns">Overview</div>
+    <div class="ni active" onclick="nav('dashboard')"><span class="ic">📊</span> Dashboard</div>
+    <div class="ns">Content</div>
+    <div class="ni" onclick="nav('questions')"><span class="ic">❓</span> Questions</div>
+    <div class="ni" onclick="nav('notes')"><span class="ic">📚</span> Lesson Notes</div>
+    <div class="ni" onclick="nav('tests')"><span class="ic">🧪</span> Tests &amp; Exams</div>
+    <div class="ns">People</div>
+    <div class="ni" onclick="nav('students')"><span class="ic">🎓</span> Students</div>
+    <div class="ni" onclick="nav('progress')"><span class="ic">📈</span> Progress Tracker</div>
+    <div class="sfooter"><button onclick="doLogout()">🚪 Sign Out</button></div>
+  </aside>
+
+  <main class="main">
+    <div class="page active" id="page-dashboard">
+      <div class="ph"><h1>Dashboard</h1><p>Welcome back, Admin. Here's your BioLearn overview.</p></div>
+      <div class="stats" id="dStats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="card"><div style="font-weight:700;margin-bottom:16px">🧪 Recent Tests</div><div id="dTests"></div></div>
+        <div class="card"><div style="font-weight:700;margin-bottom:16px">🎓 Recent Students</div><div id="dStudents"></div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-questions">
+      <div class="ph"><h1>Question Bank</h1><p>Manage MCQ questions for all classes.</p></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div class="ctabs" id="qTabs"></div>
+        <button class="btn btn-primary" onclick="openQM()">+ Add Question</button>
+      </div>
+      <div class="card"><div class="tw"><table><thead><tr><th>#</th><th>Class</th><th>Topic</th><th>Question</th><th>Answer</th><th>Actions</th></tr></thead><tbody id="qBody"></tbody></table></div></div>
+    </div>
+
+    <div class="page" id="page-notes">
+      <div class="ph"><h1>Lesson Notes</h1><p>Manage lesson notes for all classes.</p></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div class="ctabs" id="nTabs"></div>
+        <button class="btn btn-primary" onclick="openNM()">+ Add Note</button>
+      </div>
+      <div id="nGrid"></div>
+    </div>
+
+    <div class="page" id="page-tests">
+      <div class="ph"><h1>Tests &amp; Exams</h1><p>Create and administer tests for each class.</p></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div class="ctabs" id="tTabs"></div>
+        <button class="btn btn-primary" onclick="openTM()">+ Create Test</button>
+      </div>
+      <div class="card"><div class="tw"><table><thead><tr><th>Title</th><th>Class</th><th>Type</th><th>Questions</th><th>Duration</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tBody"></tbody></table></div></div>
+    </div>
+
+    <div class="page" id="page-students">
+      <div class="ph"><h1>Students</h1><p>All registered students filtered by class.</p></div>
+      <div class="ctabs" id="sTabs" style="margin-bottom:20px"></div>
+      <div class="card"><div class="tw"><table><thead><tr><th>Name</th><th>Username</th><th>Class</th><th>Tests Taken</th><th>Avg Score</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="sBody"></tbody></table></div></div>
+    </div>
+
+    <div class="page" id="page-progress">
+      <div class="ph"><h1>Progress Tracker</h1><p>Student performance across all classes.</p></div>
+      <div class="ctabs" id="pTabs" style="margin-bottom:20px"></div>
+      <div id="pCards"></div>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="mbg" id="qModal">
+  <div class="modal">
+    <h2 id="qMT">Add Question</h2>
+    <input type="hidden" id="qEI">
+    <div class="fg"><label>Class</label><select id="qCls"></select></div>
+    <div class="fg"><label>Topic</label><input type="text" id="qTop" placeholder="e.g. Cell Biology"></div>
+    <div class="fg"><label>Question</label><textarea id="qTxt" placeholder="Enter the question..."></textarea></div>
+    <div class="fg"><label>Options — click ✓ to mark the correct answer</label><div id="qOpts"></div></div>
+    <p class="err" id="qErr"></p>
+    <div class="mf"><button class="btn btn-secondary" onclick="closeM('qModal')">Cancel</button><button class="btn btn-primary" onclick="saveQ()">Save Question</button></div>
+  </div>
+</div>
+
+<div class="mbg" id="nModal">
+  <div class="modal">
+    <h2 id="nMT">Add Lesson Note</h2>
+    <input type="hidden" id="nEI">
+    <div class="fg"><label>Class</label><select id="nCls"></select></div>
+    <div class="fg"><label>Topic</label><input type="text" id="nTop" placeholder="e.g. Nutrition"></div>
+    <div class="fg"><label>Title</label><input type="text" id="nTit" placeholder="Note title"></div>
+    <div class="fg"><label>Content</label><textarea id="nCon" style="min-height:200px" placeholder="Write lesson content here..."></textarea></div>
+    <p class="err" id="nErr"></p>
+    <div class="mf"><button class="btn btn-secondary" onclick="closeM('nModal')">Cancel</button><button class="btn btn-primary" onclick="saveN()">Save Note</button></div>
+  </div>
+</div>
+
+<div class="mbg" id="tModal">
+  <div class="modal">
+    <h2 id="tMT">Create Test</h2>
+    <input type="hidden" id="tEI">
+    <div class="fg"><label>Class</label><select id="tCls" onchange="loadTQ()"></select></div>
+    <div class="fg"><label>Title</label><input type="text" id="tTit" placeholder="e.g. JSS 1 Mid-Term Test"></div>
+    <div class="fg"><label>Topic / Theme</label><input type="text" id="tTop" placeholder="e.g. Cell Biology"></div>
+    <div class="fg"><label>Type</label><select id="tTyp"><option value="test">Test</option><option value="exam">Exam</option><option value="quiz">Quiz</option></select></div>
+    <div class="fg"><label>Duration (minutes)</label><input type="number" id="tDur" value="30" min="1"></div>
+    <div class="fg"><label>Select Questions</label><div id="tQList" style="max-height:200px;overflow-y:auto;border:1.5px solid var(--border);border-radius:10px;padding:12px"></div></div>
+    <p class="err" id="tErr"></p>
+    <div class="mf"><button class="btn btn-secondary" onclick="closeM('tModal')">Cancel</button><button class="btn btn-primary" onclick="saveT()">Save Test</button></div>
+  </div>
+</div>
+
+<div class="mbg" id="stuModal">
+  <div class="modal" style="width:680px">
+    <h2 id="stName"></h2>
+    <p id="stMeta" style="color:var(--muted);font-size:.88rem;margin-bottom:24px"></p>
+    <div id="stResults"></div>
+    <div class="mf"><button class="btn btn-secondary" onclick="closeM('stuModal')">Close</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== INLINE DB ===================== */
+const DB = {
+  K:{q:'bl_questions',n:'bl_notes',t:'bl_tests',s:'bl_students',r:'bl_results'},
+  CL:['JSS 1','JSS 2','JSS 3','SS 1','SS 2','SS 3'],
+  get(k){try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v))},
+  uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)},
+  verifyAdmin(u,p){return u===atob('T3BleWVtaWlicmFoaW0xNEBnbWFpbC5jb20=')&&p===atob('QWtpbnNvbGE4NzkyJA==')},
+  getQ(c){const a=this.get(this.K.q);return c?a.filter(x=>x.class===c):a},
+  addQ(q){const a=this.get(this.K.q);q.id=this.uid();q.createdAt=Date.now();a.push(q);this.set(this.K.q,a);return q},
+  updQ(id,u){const a=this.get(this.K.q);const i=a.findIndex(x=>x.id===id);if(i>-1){a[i]={...a[i],...u};this.set(this.K.q,a)}},
+  delQ(id){this.set(this.K.q,this.get(this.K.q).filter(x=>x.id!==id))},
+  getN(c){const a=this.get(this.K.n);return c?a.filter(x=>x.class===c):a},
+  addN(n){const a=this.get(this.K.n);n.id=this.uid();n.createdAt=Date.now();a.push(n);this.set(this.K.n,a);return n},
+  updN(id,u){const a=this.get(this.K.n);const i=a.findIndex(x=>x.id===id);if(i>-1){a[i]={...a[i],...u};this.set(this.K.n,a)}},
+  delN(id){this.set(this.K.n,this.get(this.K.n).filter(x=>x.id!==id))},
+  getT(c){const a=this.get(this.K.t);return c?a.filter(x=>x.class===c):a},
+  addT(t){const a=this.get(this.K.t);t.id=this.uid();t.createdAt=Date.now();t.active=true;a.push(t);this.set(this.K.t,a);return t},
+  updT(id,u){const a=this.get(this.K.t);const i=a.findIndex(x=>x.id===id);if(i>-1){a[i]={...a[i],...u};this.set(this.K.t,a)}},
+  delT(id){this.set(this.K.t,this.get(this.K.t).filter(x=>x.id!==id))},
+  getS(c){const a=this.get(this.K.s);return c?a.filter(x=>x.class===c):a},
+  getStu(id){return this.get(this.K.s).find(x=>x.id===id)||null},
+  getR(sid){const a=this.get(this.K.r);return sid?a.filter(x=>x.studentId===sid):a},
+  seed(){
+    if(this.get(this.K.q).length>0)return;
+    [{class:'JSS 1',topic:'Cell Biology',question:'What is the basic unit of life?',options:['Atom','Cell','Organ','Tissue'],answer:1},
+     {class:'JSS 1',topic:'Cell Biology',question:'Which organelle is the powerhouse of the cell?',options:['Nucleus','Ribosome','Mitochondria','Vacuole'],answer:2},
+     {class:'JSS 1',topic:'Ecology',question:'What do plants need for photosynthesis?',options:['Oxygen only','Sunlight, CO₂, Water','Nitrogen, Water','Minerals only'],answer:1},
+     {class:'JSS 2',topic:'Nutrition',question:'Which vitamin prevents scurvy?',options:['Vitamin A','Vitamin B','Vitamin C','Vitamin D'],answer:2},
+     {class:'JSS 2',topic:'Nutrition',question:'Proteins are made up of:',options:['Fatty acids','Amino acids','Glucose units','Nucleotides'],answer:1},
+     {class:'JSS 3',topic:'Reproduction',question:'Fertilisation in humans occurs in the:',options:['Uterus','Vagina','Fallopian tube','Ovary'],answer:2},
+     {class:'SS 1',topic:'Genetics',question:'DNA stands for:',options:['Deoxyribose Nucleic Acid','Deoxyribonucleic Acid','Diribose Nucleic Acid','Double Nucleic Acid'],answer:1},
+     {class:'SS 1',topic:'Genetics',question:'The male sex chromosome pair is:',options:['XX','XY','YY','XO'],answer:1},
+     {class:'SS 2',topic:'Evolution',question:'The theory of evolution was proposed by:',options:['Mendel','Lamarck','Darwin','Pasteur'],answer:2},
+     {class:'SS 3',topic:'Ecology',question:'Which gas primarily causes the greenhouse effect?',options:['Oxygen','Nitrogen','Carbon dioxide','Hydrogen'],answer:2}
+    ].forEach(q=>this.addQ(q));
+    [{class:'JSS 1',title:'Introduction to the Cell',topic:'Cell Biology',content:'The cell is the basic structural and functional unit of all living organisms. Cells were first observed by Robert Hooke in 1665.\n\nTwo main types:\n• Prokaryotic — no nucleus (e.g. bacteria)\n• Eukaryotic — has nucleus (e.g. plant/animal cells)\n\nKey organelles:\n• Nucleus – controls cell activities, contains DNA\n• Mitochondria – produces energy (ATP)\n• Ribosome – site of protein synthesis\n• Cell membrane – controls entry/exit of substances\n• Vacuole – stores water and nutrients\n• Chloroplast (plants only) – site of photosynthesis'},
+     {class:'JSS 2',title:'Human Nutrition',topic:'Nutrition',content:'Nutrition is the process by which organisms obtain and use food.\n\nClasses of food:\n1. Carbohydrates – energy giving (rice, yam, bread)\n2. Proteins – body building (meat, fish, eggs, beans)\n3. Fats & Oils – energy reserve (butter, palm oil)\n4. Vitamins – protective (fruits, vegetables)\n5. Minerals – regulatory (calcium, iron)\n6. Water – transport medium, 60–70% of body weight\n7. Roughage – aids digestion, prevents constipation'},
+     {class:'SS 1',title:'Genetics and Heredity',topic:'Genetics',content:"Genetics is the study of heredity and variation.\n\nKey terms:\n• Gene – unit of heredity on chromosomes\n• Allele – alternative form of a gene\n• Dominant – masks the recessive allele\n• Recessive – masked by the dominant\n• Genotype – genetic makeup (AA, Aa, aa)\n• Phenotype – physical expression of genes\n\nMendel's Laws:\n1. Law of Segregation – alleles separate during gamete formation\n2. Law of Independent Assortment – genes assort independently"}
+    ].forEach(n=>this.addN(n));
+    const j1=this.getQ('JSS 1').map(q=>q.id);
+    if(j1.length)this.addT({class:'JSS 1',title:'JSS 1 Cell Biology Quiz',topic:'Cell Biology',type:'test',duration:15,questionIds:j1});
+  }
+};
+
+/* ===================== BOOT ===================== */
+DB.seed();
+let loggedIn = sessionStorage.getItem('bl_admin')==='1';
+if(loggedIn) showApp();
+
+function doLogin(){
+  const u=document.getElementById('lu').value.trim();
+  const p=document.getElementById('lp').value.trim();
+  if(DB.verifyAdmin(u,p)){sessionStorage.setItem('bl_admin','1');loggedIn=true;showApp();}
+  else document.getElementById('le').textContent='Incorrect credentials. Please try again.';
+}
+document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function doLogout(){
+  sessionStorage.removeItem('bl_admin');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('lu').value='';
+  document.getElementById('lp').value='';
+  document.getElementById('le').textContent='';
+}
+
+function showApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  initTabs();renderDash();
+}
+
+/* ===================== NAV ===================== */
+const filters={questions:'All',notes:'All',tests:'All',students:'All',progress:'All'};
+function nav(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.ni').forEach(x=>{if((x.getAttribute('onclick')||'').includes("'"+p+"'"))x.classList.add('active');});
+  ({dashboard:renderDash,questions:renderQ,notes:renderN,tests:renderT,students:renderS,progress:renderP})[p]?.();
+}
+
+/* ===================== TABS ===================== */
+function initTabs(){
+  [['qTabs','questions'],['nTabs','notes'],['tTabs','tests'],['sTabs','students'],['pTabs','progress']].forEach(([el,page])=>{
+    document.getElementById(el).innerHTML=['All',...DB.CL].map(c=>
+      `<div class="ctab ${c==='All'?'active':''}" onclick="setF('${page}','${c}',this)">${c}</div>`).join('');
+  });
+}
+function setF(page,cls,el){
+  filters[page]=cls;
+  el.closest('.ctabs').querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ({questions:renderQ,notes:renderN,tests:renderT,students:renderS,progress:renderP})[page]?.();
+}
+
+/* ===================== DASHBOARD ===================== */
+function renderDash(){
+  document.getElementById('dStats').innerHTML=[
+    ['❓',DB.getQ().length,'Questions'],['📚',DB.getN().length,'Lesson Notes'],
+    ['🧪',DB.getT().length,'Tests & Exams'],['🎓',DB.getS().length,'Students']
+  ].map(([i,v,l])=>`<div class="stat"><div style="font-size:1.5rem">${i}</div><div class="sv">${v}</div><div class="sl">${l}</div></div>`).join('');
+  const ts=DB.getT().slice(-5).reverse();
+  document.getElementById('dTests').innerHTML=ts.length?ts.map(t=>`<div class="rr"><div><strong>${t.title}</strong><br><small style="color:var(--muted)">${t.class} · ${t.questionIds.length} Qs</small></div><span class="bc">${t.class}</span></div>`).join(''):'<div class="empty"><div class="ei">🧪</div><p>No tests yet</p></div>';
+  const ss=DB.getS().slice(-5).reverse();
+  document.getElementById('dStudents').innerHTML=ss.length?ss.map(s=>`<div class="rr"><div><strong>${s.name}</strong><br><small style="color:var(--muted)">@${s.username}</small></div><span class="bc">${s.class}</span></div>`).join(''):'<div class="empty"><div class="ei">🎓</div><p>No students yet</p></div>';
+}
+
+/* ===================== QUESTIONS ===================== */
+let qAns=0;
+function renderQ(){
+  const f=filters.questions;const qs=f==='All'?DB.getQ():DB.getQ(f);
+  const b=document.getElementById('qBody');
+  if(!qs.length){b.innerHTML=`<tr><td colspan="6"><div class="empty"><div class="ei">❓</div><p>No questions found</p></div></td></tr>`;return;}
+  b.innerHTML=qs.map((q,i)=>`<tr><td>${i+1}</td><td><span class="bc">${q.class}</span></td><td>${q.topic}</td><td style="max-width:280px">${q.question}</td><td style="color:var(--green);font-weight:600">${q.options[q.answer]}</td><td><div class="acts"><button class="btn btn-warn" onclick="openQM('${q.id}')">✏️ Edit</button><button class="btn btn-danger" onclick="delQ('${q.id}')">🗑️</button></div></td></tr>`).join('');
+}
+function openQM(id){
+  document.getElementById('qEI').value=id||'';
+  document.getElementById('qMT').textContent=id?'Edit Question':'Add Question';
+  document.getElementById('qCls').innerHTML=DB.CL.map(c=>`<option>${c}</option>`).join('');
+  qAns=0;
+  if(id){const q=DB.getQ().find(x=>x.id===id);if(q){document.getElementById('qCls').value=q.class;document.getElementById('qTop').value=q.topic;document.getElementById('qTxt').value=q.question;qAns=q.answer;buildOpts(q.options,q.answer);}}
+  else{document.getElementById('qTop').value='';document.getElementById('qTxt').value='';buildOpts(['','','',''],0);}
+  document.getElementById('qErr').textContent='';
+  document.getElementById('qModal').classList.add('open');
+}
+function buildOpts(opts,correct){
+  document.getElementById('qOpts').innerHTML=opts.map((o,i)=>`<div class="or"><span style="font-weight:700;color:var(--muted);width:20px">${String.fromCharCode(65+i)}.</span><input type="text" value="${o}" id="op${i}" placeholder="Option ${String.fromCharCode(65+i)}"><button class="cbtn ${i===correct?'sel':''}" id="ob${i}" onclick="pickAns(${i})">✓</button></div>`).join('');
+  qAns=correct;
+}
+function pickAns(i){qAns=i;document.querySelectorAll('.cbtn').forEach((b,j)=>b.classList.toggle('sel',j===i));}
+function saveQ(){
+  const id=document.getElementById('qEI').value;
+  const cls=document.getElementById('qCls').value;
+  const topic=document.getElementById('qTop').value.trim();
+  const question=document.getElementById('qTxt').value.trim();
+  const opts=[0,1,2,3].map(i=>document.getElementById('op'+i).value.trim());
+  if(!topic||!question||opts.some(o=>!o)){document.getElementById('qErr').textContent='Please fill all fields.';return;}
+  const d={class:cls,topic,question,options:opts,answer:qAns};
+  id?DB.updQ(id,d):DB.addQ(d);
+  closeM('qModal');renderQ();toast(id?'Question updated!':'Question added!');
+}
+function delQ(id){if(!confirm('Delete this question?'))return;DB.delQ(id);renderQ();toast('Question deleted.');}
+
+/* ===================== NOTES ===================== */
+function renderN(){
+  const f=filters.notes;const ns=f==='All'?DB.getN():DB.getN(f);
+  const g=document.getElementById('nGrid');
+  if(!ns.length){g.innerHTML='<div class="card"><div class="empty"><div class="ei">📚</div><p>No lesson notes found</p></div></div>';return;}
+  g.innerHTML=ns.map(n=>`<div class="card" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px"><div><span class="bc" style="margin-bottom:6px;display:inline-block">${n.class}</span><h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:2px">${n.title}</h3><p style="font-size:.8rem;color:var(--muted)">${n.topic}</p></div><div class="acts"><button class="btn btn-warn" onclick="openNM('${n.id}')">✏️ Edit</button><button class="btn btn-danger" onclick="delN('${n.id}')">🗑️</button></div></div><div style="margin-top:14px;background:#f8fdf9;border-radius:10px;padding:14px;font-size:.88rem;line-height:1.75;white-space:pre-wrap;max-height:140px;overflow:hidden">${n.content}</div></div>`).join('');
+}
+function openNM(id){
+  document.getElementById('nEI').value=id||'';
+  document.getElementById('nMT').textContent=id?'Edit Note':'Add Lesson Note';
+  document.getElementById('nCls').innerHTML=DB.CL.map(c=>`<option>${c}</option>`).join('');
+  if(id){const n=DB.getN().find(x=>x.id===id);if(n){document.getElementById('nCls').value=n.class;document.getElementById('nTop').value=n.topic;document.getElementById('nTit').value=n.title;document.getElementById('nCon').value=n.content;}}
+  else{['nTop','nTit','nCon'].forEach(x=>document.getElementById(x).value='');}
+  document.getElementById('nErr').textContent='';
+  document.getElementById('nModal').classList.add('open');
+}
+function saveN(){
+  const id=document.getElementById('nEI').value;
+  const d={class:document.getElementById('nCls').value,topic:document.getElementById('nTop').value.trim(),title:document.getElementById('nTit').value.trim(),content:document.getElementById('nCon').value.trim()};
+  if(!d.topic||!d.title||!d.content){document.getElementById('nErr').textContent='Please fill all fields.';return;}
+  id?DB.updN(id,d):DB.addN(d);
+  closeM('nModal');renderN();toast(id?'Note updated!':'Note added!');
+}
+function delN(id){if(!confirm('Delete this note?'))return;DB.delN(id);renderN();toast('Note deleted.');}
+
+/* ===================== TESTS ===================== */
+function renderT(){
+  const f=filters.tests;const ts=f==='All'?DB.getT():DB.getT(f);
+  const b=document.getElementById('tBody');
+  if(!ts.length){b.innerHTML=`<tr><td colspan="7"><div class="empty"><div class="ei">🧪</div><p>No tests found</p></div></td></tr>`;return;}
+  b.innerHTML=ts.map(t=>`<tr><td><strong>${t.title}</strong></td><td><span class="bc">${t.class}</span></td><td><span class="bt">${t.type}</span></td><td>${t.questionIds.length}</td><td>${t.duration} min</td><td><span class="${t.active?'ba':'bi'}">${t.active?'Active':'Inactive'}</span></td><td><div class="acts"><button class="btn btn-warn" onclick="toggleT('${t.id}',${t.active})">${t.active?'Deactivate':'Activate'}</button><button class="btn btn-warn" onclick="openTM('${t.id}')">✏️</button><button class="btn btn-danger" onclick="delT('${t.id}')">🗑️</button></div></td></tr>`).join('');
+}
+function toggleT(id,a){DB.updT(id,{active:!a});renderT();toast(`Test ${!a?'activated':'deactivated'}.`);}
+function openTM(id){
+  document.getElementById('tEI').value=id||'';
+  document.getElementById('tMT').textContent=id?'Edit Test':'Create Test';
+  document.getElementById('tCls').innerHTML=DB.CL.map(c=>`<option>${c}</option>`).join('');
+  if(id){const t=DB.getT().find(x=>x.id===id);if(t){document.getElementById('tCls').value=t.class;document.getElementById('tTit').value=t.title;document.getElementById('tTop').value=t.topic||'';document.getElementById('tTyp').value=t.type;document.getElementById('tDur').value=t.duration;loadTQ(t.questionIds);return;}}
+  else{['tTit','tTop'].forEach(x=>document.getElementById(x).value='');document.getElementById('tDur').value=30;}
+  loadTQ([]);
+  document.getElementById('tErr').textContent='';
+  document.getElementById('tModal').classList.add('open');
+}
+function loadTQ(sel){
+  const cls=document.getElementById('tCls').value;
+  const qs=DB.getQ(cls);const s=sel||[];
+  const l=document.getElementById('tQList');
+  if(!qs.length){l.innerHTML='<p style="color:var(--muted);font-size:.85rem">No questions for this class yet. Add some first.</p>';}
+  else{l.innerHTML=qs.map(q=>`<label style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;cursor:pointer;font-size:.85rem;border-bottom:1px solid #f0f7f2"><input type="checkbox" value="${q.id}" ${s.includes(q.id)?'checked':''} style="margin-top:3px;width:auto"><span><strong>${q.topic}</strong> — ${q.question}</span></label>`).join('');}
+  document.getElementById('tErr').textContent='';
+  document.getElementById('tModal').classList.add('open');
+}
+function saveT(){
+  const id=document.getElementById('tEI').value;
+  const title=document.getElementById('tTit').value.trim();
+  const checked=[...document.querySelectorAll('#tQList input[type=checkbox]:checked')].map(c=>c.value);
+  if(!title){document.getElementById('tErr').textContent='Please enter a title.';return;}
+  if(!checked.length){document.getElementById('tErr').textContent='Select at least one question.';return;}
+  const d={class:document.getElementById('tCls').value,title,topic:document.getElementById('tTop').value.trim(),type:document.getElementById('tTyp').value,duration:parseInt(document.getElementById('tDur').value),questionIds:checked};
+  id?DB.updT(id,d):DB.addT(d);
+  closeM('tModal');renderT();toast(id?'Test updated!':'Test created!');
+}
+function delT(id){if(!confirm('Delete this test?'))return;DB.delT(id);renderT();toast('Test deleted.');}
+
+/* ===================== STUDENTS ===================== */
+function renderS(){
+  const f=filters.students;const ss=f==='All'?DB.getS():DB.getS(f);
+  const b=document.getElementById('sBody');
+  if(!ss.length){b.innerHTML=`<tr><td colspan="7"><div class="empty"><div class="ei">🎓</div><p>No students found</p></div></td></tr>`;return;}
+  b.innerHTML=ss.map(s=>{
+    const rs=DB.getR(s.id);
+    const avg=rs.length?Math.round(rs.reduce((a,r)=>a+(r.score/r.total*100),0)/rs.length):'—';
+    return `<tr><td><strong>${s.name}</strong></td><td>@${s.username}</td><td><span class="bc">${s.class}</span></td><td>${rs.length}</td><td>${avg!=='—'?avg+'%':'—'}</td><td>${new Date(s.createdAt).toLocaleDateString()}</td><td><button class="btn btn-secondary" style="padding:7px 14px;font-size:.8rem" onclick="viewStu('${s.id}')">View Report</button></td></tr>`;
+  }).join('');
+}
+function viewStu(id){
+  const s=DB.getStu(id);const rs=DB.getR(id);
+  document.getElementById('stName').textContent=s.name;
+  document.getElementById('stMeta').textContent=`@${s.username} · ${s.class} · Joined ${new Date(s.createdAt).toLocaleDateString()}`;
+  const l=document.getElementById('stResults');
+  if(!rs.length){l.innerHTML='<p style="color:var(--muted)">No test results yet.</p>';}
+  else{l.innerHTML=rs.map(r=>{
+    const pct=Math.round(r.score/r.total*100);const c=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--danger)';
+    const t=DB.getT().find(x=>x.id===r.testId);
+    return `<div class="rr"><div><strong>${t?t.title:'Test'}</strong><br><small style="color:var(--muted)">${new Date(r.submittedAt).toLocaleString()}</small><div class="pbw" style="width:180px;margin-top:6px"><div class="pb" style="width:${pct}%;background:${c}"></div></div></div><div style="text-align:right"><span style="font-size:1.2rem;font-weight:700;color:${c}">${pct}%</span><br><small style="color:var(--muted)">${r.score}/${r.total}</small></div></div>`;
+  }).join('');}
+  document.getElementById('stuModal').classList.add('open');
+}
+
+/* ===================== PROGRESS ===================== */
+function renderP(){
+  const f=filters.progress;const ss=f==='All'?DB.getS():DB.getS(f);
+  const c=document.getElementById('pCards');
+  if(!ss.length){c.innerHTML='<div class="card"><div class="empty"><div class="ei">📈</div><p>No students to track</p></div></div>';return;}
+  c.innerHTML=ss.map(s=>{
+    const rs=DB.getR(s.id);const avg=rs.length?Math.round(rs.reduce((a,r)=>a+(r.score/r.total*100),0)/rs.length):0;
+    const col=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--danger)';
+    return `<div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${s.name}</strong><span style="color:var(--muted);font-size:.82rem;margin-left:6px">@${s.username}</span><span class="bc" style="margin-left:8px">${s.class}</span></div><div style="text-align:right"><span style="font-weight:700;color:${col};font-size:1.1rem">${avg>0?avg+'%':'—'}</span><span style="color:var(--muted);font-size:.8rem;display:block">${rs.length} test${rs.length!==1?'s':''}</span></div></div>${avg>0?`<div class="pbw" style="margin-top:12px"><div class="pb" style="width:${avg}%;background:${col}"></div></div>`:''}</div>`;
+  }).join('');
+}
+
+/* ===================== UTILS ===================== */
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mbg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function toast(msg){const t=document.getElementById('toast');t.textContent='✓ '+msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>

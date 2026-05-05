@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BioLearn — Biology Class Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1a6b3c;--green-light:#2d9e5f;--green-pale:#e8f5ee;--amber:#e8a020;--dark:#0e1a14;--text:#1c2e22;--muted:#6b8a74;--white:#fafdf9;--card:#ffffff;--border:#d0e8d9}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);min-height:100vh;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 60px;background:rgba(250,253,249,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--green)}.logo span{color:var(--amber)}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;position:relative;background:radial-gradient(ellipse 80% 60% at 50% 0%,#d4f0e0,transparent 60%),radial-gradient(ellipse 40% 40% at 10% 80%,#c8ebd8,transparent 50%),var(--white)}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,#1a6b3c18 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-pale);border:1px solid var(--border);border-radius:100px;padding:6px 18px;font-size:0.78rem;font-weight:600;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:28px;animation:fadeUp .6s ease both}
+h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;line-height:1.05;color:var(--dark);max-width:840px;animation:fadeUp .7s .1s ease both}
+h1 em{font-style:italic;color:var(--green)}
+.sub{margin-top:24px;font-size:1.15rem;color:var(--muted);max-width:520px;line-height:1.7;animation:fadeUp .7s .2s ease both}
+.portals{display:flex;gap:24px;margin-top:56px;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s .35s ease both}
+.portal-card{display:flex;flex-direction:column;align-items:flex-start;background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:36px 40px;width:320px;text-align:left;cursor:pointer;text-decoration:none;color:inherit;transition:transform .22s,box-shadow .22s,border-color .22s;box-shadow:0 4px 24px rgba(26,107,60,.06);position:relative;overflow:hidden}
+.portal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.portal-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(26,107,60,.14);border-color:var(--green-light)}
+.portal-card:hover::after{transform:scaleX(1)}
+.portal-card.amber::after{background:var(--amber)}
+.portal-icon{font-size:2.4rem;margin-bottom:20px;background:var(--green-pale);width:64px;height:64px;border-radius:16px;display:grid;place-items:center}
+.portal-card.amber .portal-icon{background:#fff5e0}
+.portal-card h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:10px}
+.portal-card p{font-size:0.88rem;color:var(--muted);line-height:1.65}
+.portal-arrow{margin-top:24px;font-size:0.88rem;font-weight:600;color:var(--green)}
+.portal-card.amber .portal-arrow{color:var(--amber)}
+.features{max-width:1100px;margin:0 auto;padding:100px 40px}
+.section-label{font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+.features h2{font-family:'Playfair Display',serif;font-size:2.6rem;margin-bottom:60px;max-width:500px;line-height:1.2}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.feat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;transition:transform .2s}
+.feat:hover{transform:translateY(-3px)}
+.feat-icon{font-size:1.8rem;margin-bottom:14px}
+.feat h3{font-size:1rem;font-weight:600;margin-bottom:8px}
+.feat p{font-size:0.85rem;color:var(--muted);line-height:1.6}
+.classes-strip{background:var(--dark);padding:50px 40px;text-align:center}
+.classes-strip p{color:#8aad97;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:20px}
+.class-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.class-tag{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#c5e3cf;padding:8px 18px;border-radius:100px;font-size:0.82rem;font-weight:500}
+footer{text-align:center;padding:40px;font-size:0.82rem;color:var(--muted);border-top:1px solid var(--border)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){nav{padding:16px 20px}.feat-grid{grid-template-columns:1fr}.portal-card{width:90vw}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">Bio<span>Learn</span></div>
+  <div style="font-size:0.82rem;color:var(--muted)">JSS 1 — SS 3 · Biology</div>
+</nav>
+
+<section class="hero">
+  <div class="badge">🌿 Biology Education Platform</div>
+  <h1>Learn Biology.<br><em>Master Science.</em></h1>
+  <p class="sub">A complete administration platform for Biology classes from JSS 1 to SS 3 — built for teachers and students alike.</p>
+  <div class="portals">
+    <a href="admin-portal.html" class="portal-card">
+      <div class="portal-icon">🛡️</div>
+      <h2>Admin Portal</h2>
+      <p>Upload questions, manage lesson notes, administer tests, and track student progress across all classes.</p>
+      <div class="portal-arrow">Enter Admin Portal →</div>
+    </a>
+    <a href="student-portal.html" class="portal-card amber">
+      <div class="portal-icon">🎓</div>
+      <h2>Student Portal</h2>
+      <p>Register, access class materials, take tests and exams, and view your detailed progress report.</p>
+      <div class="portal-arrow">Enter Student Portal →</div>
+    </a>
+  </div>
+</section>
+
+<section class="features">
+  <div class="section-label">Platform Features</div>
+  <h2>Everything you need to teach and learn</h2>
+  <div class="feat-grid">
+    <div class="feat"><div class="feat-icon">📝</div><h3>Question Bank</h3><p>Upload, edit and organise MCQ questions per class and topic with instant filtering.</p></div>
+    <div class="feat"><div class="feat-icon">📚</div><h3>Lesson Notes</h3><p>Rich lesson notes for every class, expandable and accessible anytime by students.</p></div>
+    <div class="feat"><div class="feat-icon">🧪</div><h3>Tests &amp; Exams</h3><p>Administer timed tests and exams. Students get auto-graded results instantly.</p></div>
+    <div class="feat"><div class="feat-icon">📊</div><h3>Progress Tracking</h3><p>Detailed reports showing scores, attempts, and improvement trends over time.</p></div>
+    <div class="feat"><div class="feat-icon">🔒</div><h3>Class Security</h3><p>Students only see materials relevant to their own registered class level.</p></div>
+    <div class="feat"><div class="feat-icon">✏️</div><h3>Full CRUD Control</h3><p>Admins can create, update and delete all content — questions, notes, and tests.</p></div>
+  </div>
+</section>
+
+<div class="classes-strip">
+  <p>Covers All Classes</p>
+  <div class="class-tags">
+    <span class="class-tag">JSS 1</span><span class="class-tag">JSS 2</span><span class="class-tag">JSS 3</span>
+    <span class="class-tag">SS 1</span><span class="class-tag">SS 2</span><span class="class-tag">SS 3</span>
+  </div>
+</div>
+<footer>© 2026 BioLearn · Biology Class Administration System</footer>
+</body>
+</html>
