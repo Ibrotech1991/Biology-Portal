@@ -852,31 +852,39 @@ return Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 /* ================= ADMIN LOGIN ================= */
 
-const ADMIN = {
-username:"Ibrahim.akinsola@miva.edu.ng",
-password:"Akinsola8792$"
-};
+function doLogin(){
 
-function adminLogin(){
+const username =
+document.getElementById('lu').value.trim();
 
-const u=document.getElementById('adminUser').value.trim();
-const p=document.getElementById('adminPass').value.trim();
+const password =
+document.getElementById('lp').value.trim();
 
-if(u===ADMIN.username && p===ADMIN.password){
+/* ADMIN ACCOUNT */
 
-document.getElementById('loginScreen').style.display='none';
-document.getElementById('adminPanel').style.display='block';
+const adminUser =
+'Ibrahim.akinsola@miva.edu.ng';
+
+const adminPass =
+'Akinsola8792$';
+
+if(
+username === adminUser &&
+password === adminPass
+){
+
+document.getElementById('authScreen').style.display='none';
+
+document.getElementById('app').style.display='block';
 
 loadDashboard();
-renderQuestions();
-renderStudents();
-renderResults();
-renderTests();
+
+toast('Welcome Admin 👋');
 
 }else{
 
-document.getElementById('loginError').textContent =
-'Invalid Username or Password';
+document.getElementById('le').textContent =
+'Invalid username or password';
 
 }
 
