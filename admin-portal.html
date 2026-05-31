@@ -1,4 +1,4 @@
-```html
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -483,16 +483,79 @@ Recent Results
 
 </div>
 
+```html id="u5v2mk"
 <!-- QUESTIONS -->
 
 <div class="page" id="questions">
 
 <div class="ph">
 <h1>Questions</h1>
-<p>Add and manage Biology questions.</p>
+<p>Add, edit, paste and manage Biology questions.</p>
 </div>
 
+<!-- BULK PASTE -->
+
 <div class="card">
+
+<h3 style="margin-bottom:20px">
+📋 Paste Questions
+</h3>
+
+<p style="
+font-size:.85rem;
+color:var(--muted);
+margin-bottom:16px;
+line-height:1.7;
+">
+Format Example:<br><br>
+
+What is Biology?<br>
+A. Study of life<br>
+B. Study of water<br>
+C. Study of soil<br>
+D. Study of rocks<br>
+ANSWER: A
+</p>
+
+<div class="fg">
+<label>Class</label>
+<select id="bulkClass">
+<option>JSS 1</option>
+<option>JSS 2</option>
+<option>JSS 3</option>
+<option>SS 1</option>
+<option>SS 2</option>
+<option>SS 3</option>
+</select>
+</div>
+
+<div class="fg">
+<label>Topic</label>
+<input type="text" id="bulkTopic">
+</div>
+
+<div class="fg">
+<label>Paste Questions</label>
+<textarea id="bulkQuestions"
+style="min-height:250px"></textarea>
+</div>
+
+<button class="btn btn-primary"
+onclick="parseBulkQuestions()">
+Parse & Save Questions
+</button>
+
+</div>
+
+<!-- SINGLE QUESTION -->
+
+<div class="card">
+
+<h3 style="margin-bottom:20px">
+➕ Add / Edit Question
+</h3>
+
+<input type="hidden" id="editQuestionId">
 
 <div class="fg">
 <label>Class</label>
@@ -546,16 +609,19 @@ Recent Results
 </select>
 </div>
 
-<button class="btn btn-primary" onclick="addQuestion()">
+<button class="btn btn-primary"
+onclick="saveQuestion()">
 Save Question
 </button>
 
 </div>
 
+<!-- ALL QUESTIONS -->
+
 <div class="card">
 
 <h3 style="margin-bottom:20px">
-All Questions
+📚 All Questions
 </h3>
 
 <div id="questionList"></div>
@@ -884,52 +950,127 @@ ${Math.round((r.score/r.total)*100)}%
 
 }
 
-/* ================= QUESTIONS ================= */
+```html id="l87d9f"
+<script>
 
-function addQuestion(){
+/* ================= SAVE QUESTION ================= */
+
+function saveQuestion(){
 
 const questions = DB.get(DB.K.q);
 
-questions.push({
-id:DB.uid(),
-class:document.getElementById('qClass').value,
-topic:document.getElementById('qTopic').value,
-question:document.getElementById('qText').value,
+const editId =
+document.getElementById('editQuestionId').value;
+
+const questionData = {
+id: editId || DB.uid(),
+class: document.getElementById('qClass').value,
+topic: document.getElementById('qTopic').value,
+question: document.getElementById('qText').value,
 options:[
 document.getElementById('qA').value,
 document.getElementById('qB').value,
 document.getElementById('qC').value,
 document.getElementById('qD').value
 ],
-answer:Number(document.getElementById('qAnswer').value)
-});
+answer:Number(
+document.getElementById('qAnswer').value
+)
+};
 
-DB.set(DB.K.q,questions);
+if(editId){
+
+const index = questions.findIndex(q=>q.id===editId);
+
+questions[index] = questionData;
+
+alert('Question Updated Successfully');
+
+}else{
+
+questions.push(questionData);
 
 alert('Question Added Successfully');
 
+}
+
+DB.set(DB.K.q,questions);
+
+clearQuestionForm();
+
 renderQuestions();
+
 loadDashboard();
 
 }
+
+/* ================= CLEAR FORM ================= */
+
+function clearQuestionForm(){
+
+document.getElementById('editQuestionId').value='';
+
+document.getElementById('qTopic').value='';
+document.getElementById('qText').value='';
+document.getElementById('qA').value='';
+document.getElementById('qB').value='';
+document.getElementById('qC').value='';
+document.getElementById('qD').value='';
+document.getElementById('qAnswer').value='0';
+
+}
+
+/* ================= RENDER QUESTIONS ================= */
 
 function renderQuestions(){
 
 const questions = DB.get(DB.K.q);
 
 document.getElementById('questionList').innerHTML =
+
 questions.map(q=>`
+
 <div class="rr">
 
-<div>
-<div style="font-weight:700">
+<div style="max-width:70%">
+
+<div style="
+font-weight:700;
+margin-bottom:6px;
+">
 ${q.question}
 </div>
 
-<div style="font-size:.82rem;color:var(--muted)">
+<div style="
+font-size:.82rem;
+color:var(--muted);
+margin-bottom:8px;
+">
 ${q.class} • ${q.topic}
 </div>
+
+<div style="
+font-size:.82rem;
+line-height:1.8;
+">
+A. ${q.options[0]}<br>
+B. ${q.options[1]}<br>
+C. ${q.options[2]}<br>
+D. ${q.options[3]}
 </div>
+
+</div>
+
+<div style="
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+">
+
+<button class="btn btn-secondary"
+onclick="editQuestion('${q.id}')">
+Edit
+</button>
 
 <button class="btn btn-danger"
 onclick="deleteQuestion('${q.id}')">
@@ -937,97 +1078,153 @@ Delete
 </button>
 
 </div>
+
+</div>
+
 `).join('');
 
 }
 
+/* ================= EDIT QUESTION ================= */
+
+function editQuestion(id){
+
+const question =
+DB.get(DB.K.q).find(q=>q.id===id);
+
+if(!question) return;
+
+document.getElementById('editQuestionId').value =
+question.id;
+
+document.getElementById('qClass').value =
+question.class;
+
+document.getElementById('qTopic').value =
+question.topic;
+
+document.getElementById('qText').value =
+question.question;
+
+document.getElementById('qA').value =
+question.options[0];
+
+document.getElementById('qB').value =
+question.options[1];
+
+document.getElementById('qC').value =
+question.options[2];
+
+document.getElementById('qD').value =
+question.options[3];
+
+document.getElementById('qAnswer').value =
+question.answer;
+
+window.scrollTo({
+top:0,
+behavior:'smooth'
+});
+
+}
+
+/* ================= DELETE QUESTION ================= */
+
 function deleteQuestion(id){
+
+if(!confirm('Delete this question?')) return;
 
 let questions = DB.get(DB.K.q);
 
-questions = questions.filter(q=>q.id!==id);
+questions =
+questions.filter(q=>q.id!==id);
 
 DB.set(DB.K.q,questions);
 
 renderQuestions();
+
 loadDashboard();
 
 }
 
-/* ================= NOTES ================= */
+/* ================= BULK QUESTION PARSER ================= */
 
-function addNote(){
+function parseBulkQuestions(){
 
-const notes = DB.get(DB.K.n);
+const text =
+document.getElementById('bulkQuestions').value.trim();
 
-notes.push({
-id:DB.uid(),
-class:document.getElementById('noteClass').value,
-title:document.getElementById('noteTitle').value,
-topic:document.getElementById('noteTopic').value,
-content:document.getElementById('noteContent').value
-});
+const cls =
+document.getElementById('bulkClass').value;
 
-DB.set(DB.K.n,notes);
+const topic =
+document.getElementById('bulkTopic').value;
 
-alert('Lesson Note Saved');
-
+if(!text){
+alert('Paste questions first');
+return;
 }
 
-/* ================= TESTS ================= */
+const blocks = text.split(/ANSWER:/i);
 
-function addTest(){
+let questions = DB.get(DB.K.q);
 
-const tests = DB.get(DB.K.t);
+let added = 0;
 
-const allQuestions = DB.get(DB.K.q);
+blocks.forEach(block=>{
 
-const cls = document.getElementById('testClass').value;
+const lines =
+block.trim()
+.split('\n')
+.map(x=>x.trim())
+.filter(Boolean);
 
-tests.push({
+if(lines.length < 5) return;
+
+const question = lines[0];
+
+const options = [
+lines[1]?.replace(/^A[\).\s-]*/i,''),
+lines[2]?.replace(/^B[\).\s-]*/i,''),
+lines[3]?.replace(/^C[\).\s-]*/i,''),
+lines[4]?.replace(/^D[\).\s-]*/i,'')
+];
+
+const answerLine =
+block.split('\n').pop().trim();
+
+let answer = 0;
+
+if(answerLine.includes('B')) answer = 1;
+if(answerLine.includes('C')) answer = 2;
+if(answerLine.includes('D')) answer = 3;
+
+questions.push({
 id:DB.uid(),
 class:cls,
-title:document.getElementById('testTitle').value,
-topic:document.getElementById('testTopic').value,
-type:'test',
-duration:Number(document.getElementById('testDuration').value),
-questionIds:allQuestions
-.filter(q=>q.class===cls)
-.map(q=>q.id),
-active:true
+topic:topic,
+question:question,
+options:options,
+answer:answer
 });
 
-DB.set(DB.K.t,tests);
+added++;
 
-alert('Test Created Successfully');
+});
 
-renderTests();
+DB.set(DB.K.q,questions);
+
+alert(added + ' Questions Added Successfully');
+
+document.getElementById('bulkQuestions').value='';
+
+renderQuestions();
+
 loadDashboard();
 
 }
 
-function renderTests(){
-
-const tests = DB.get(DB.K.t);
-
-document.getElementById('testList').innerHTML =
-tests.map(t=>`
-<div class="rr">
-
-<div>
-<div style="font-weight:700">
-${t.title}
-</div>
-
-<div style="font-size:.82rem;color:var(--muted)">
-${t.class} • ${t.duration} mins
-</div>
-</div>
-
-</div>
-`).join('');
-
-}
+</script>
 
 /* ================= STUDENTS ================= */
 
