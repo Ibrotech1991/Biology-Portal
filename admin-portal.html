@@ -4,17 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BioLearn Admin Portal</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-
-*,*::before,*::after{
-box-sizing:border-box;
-margin:0;
-padding:0
-}
-
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
 --green:#1a6b3c;
 --green-light:#2d9e5f;
@@ -28,406 +20,453 @@ padding:0
 --card:#fff;
 --border:#d0e8d9;
 --danger:#c0392b;
---sw:250px
+--sidebar:250px;
 }
 
 body{
 font-family:'DM Sans',sans-serif;
-background:#f0f7f2;
-color:var(--text)
+background:#f2f8f4;
+color:var(--text);
+min-height:100vh;
 }
 
 /* LOGIN */
-
-#authScreen{
-min-height:100vh;
+#loginScreen{
 display:flex;
 align-items:center;
 justify-content:center;
-background:radial-gradient(circle at top,#d9f2e4,#f0f7f2)
+min-height:100vh;
+padding:20px;
+background:radial-gradient(circle at top,#d7f0e0,transparent 45%),#f7fbf8;
 }
 
-.abox{
-background:#fff;
-padding:45px;
-border-radius:24px;
+.login-box{
 width:420px;
-max-width:95%;
+max-width:100%;
+background:#fff;
 border:1px solid var(--border);
-box-shadow:0 20px 60px rgba(0,0,0,.08)
+border-radius:24px;
+padding:40px;
+box-shadow:0 20px 50px rgba(0,0,0,.08);
 }
 
 .logo{
 font-family:'Playfair Display',serif;
 font-size:2rem;
 font-weight:900;
-color:var(--green)
+color:var(--green);
 }
+.logo span{color:var(--amber)}
 
-.logo span{
-color:var(--amber)
-}
-
-input,textarea,select{
-width:100%;
-padding:13px;
-border:1px solid var(--border);
-border-radius:12px;
-font-family:inherit;
+.sub{
 margin-top:8px;
-font-size:.92rem
+color:var(--muted);
+font-size:.92rem;
+margin-bottom:30px;
 }
 
-textarea{
-min-height:140px;
-resize:vertical
-}
-
-.fg{
-margin-bottom:18px
-}
-
+.form-group{margin-bottom:18px}
 label{
-font-size:.82rem;
-font-weight:700
+display:block;
+font-size:.78rem;
+font-weight:700;
+margin-bottom:8px;
+text-transform:uppercase;
+letter-spacing:.05em;
+}
+
+input,select,textarea{
+width:100%;
+padding:13px 14px;
+border-radius:10px;
+border:1.5px solid var(--border);
+font-family:inherit;
+font-size:.95rem;
+outline:none;
+}
+
+textarea{min-height:130px;resize:vertical}
+
+input:focus,select:focus,textarea:focus{
+border-color:var(--green);
 }
 
 .btn{
-padding:12px 22px;
 border:none;
-border-radius:12px;
 cursor:pointer;
-font-weight:600;
+padding:12px 20px;
+border-radius:10px;
 font-family:inherit;
-transition:.2s
-}
-
-.btn:hover{
-transform:translateY(-2px)
+font-weight:700;
+font-size:.92rem;
+transition:.2s;
 }
 
 .btn-primary{
 background:var(--green);
-color:#fff
+color:#fff;
 }
 
-.btn-secondary{
-background:var(--green-pale);
-color:var(--green)
+.btn-primary:hover{background:var(--green-light)}
+
+.btn-amber{
+background:var(--amber);
+color:#fff;
 }
 
 .btn-danger{
 background:var(--danger);
-color:#fff
+color:#fff;
+}
+
+.btn-secondary{
+background:var(--green-pale);
+color:var(--green);
+}
+
+.btn-full{width:100%}
+.err{
+margin-top:12px;
+color:var(--danger);
+font-size:.85rem;
 }
 
 /* APP */
-
-#app{
-display:none
-}
+#app{display:none}
 
 .sidebar{
 position:fixed;
 left:0;
 top:0;
 bottom:0;
-width:var(--sw);
+width:var(--sidebar);
 background:var(--dark);
-padding:30px 0;
-overflow-y:auto
+color:#fff;
+padding:28px 0;
+overflow-y:auto;
 }
 
 .sidebar .logo{
 padding:0 24px;
-margin-bottom:35px
 }
 
-.ni{
-padding:14px 24px;
-color:#c5e3cf;
+.admin-mail{
+padding:0 24px;
+margin-top:6px;
+font-size:.85rem;
+color:#8db49a;
+line-height:1.5;
+}
+
+.nav-title{
+padding:22px 24px 10px;
+font-size:.72rem;
+text-transform:uppercase;
+letter-spacing:.1em;
+color:#4f715c;
+}
+
+.nav-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:13px 24px;
 cursor:pointer;
 font-size:.92rem;
-transition:.2s
+color:#b8d3c1;
+transition:.2s;
+border-left:3px solid transparent;
 }
 
-.ni:hover{
-background:rgba(255,255,255,.06);
-color:#fff
+.nav-item:hover{
+background:rgba(255,255,255,.05);
+color:#fff;
+}
+
+.nav-item.active{
+background:rgba(232,160,32,.12);
+border-left-color:var(--amber);
+color:#fff;
 }
 
 .main{
-margin-left:var(--sw);
-padding:40px
+margin-left:var(--sidebar);
+padding:35px;
 }
 
-.page{
-display:none
+.page{display:none}
+.page.active{display:block}
+
+.page-header{
+margin-bottom:25px;
 }
 
-.page.active{
-display:block
+.page-header h1{
+font-family:'Playfair Display',serif;
+font-size:2rem;
 }
 
-.card{
-background:#fff;
-padding:26px;
-border-radius:18px;
-border:1px solid var(--border);
-margin-bottom:24px
+.page-header p{
+color:var(--muted);
+margin-top:5px;
 }
 
 .stats{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:18px;
-margin-bottom:30px
+margin-bottom:28px;
 }
 
-.stat{
+.stat-card{
 background:#fff;
-padding:24px;
-border-radius:18px;
-border:1px solid var(--border)
+border:1px solid var(--border);
+border-radius:16px;
+padding:22px;
 }
 
-.sv{
+.stat-card h2{
 font-size:2rem;
-font-weight:900;
-color:var(--green)
+font-family:'Playfair Display',serif;
+color:var(--amber);
 }
 
-.rr{
+.stat-card p{
+margin-top:6px;
+font-size:.84rem;
+color:var(--muted);
+}
+
+.card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:16px;
+padding:24px;
+margin-bottom:24px;
+}
+
+.card-title{
+font-size:1rem;
+font-weight:700;
+margin-bottom:18px;
+}
+
+.grid-2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:24px;
+}
+
+.table-wrap{
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:14px;
+border-bottom:1px solid var(--border);
+text-align:left;
+font-size:.9rem;
+}
+
+th{
+background:#f7fbf8;
+font-size:.8rem;
+text-transform:uppercase;
+letter-spacing:.05em;
+}
+
+.badge{
+display:inline-block;
+padding:5px 12px;
+border-radius:100px;
+font-size:.74rem;
+font-weight:700;
+}
+
+.badge-green{
+background:var(--green-pale);
+color:var(--green);
+}
+
+.badge-amber{
+background:var(--amber-pale);
+color:#a06c00;
+}
+
+.question-box,.note-box,.resource-box,.assignment-box,.test-box{
+background:#fff;
+border:1px solid var(--border);
+border-radius:14px;
+padding:18px;
+margin-bottom:18px;
+}
+
+.question-title{
+font-weight:700;
+margin-bottom:10px;
+line-height:1.6;
+}
+
+.option{
+font-size:.9rem;
+margin-bottom:6px;
+color:var(--muted);
+}
+
+.actions{
 display:flex;
-justify-content:space-between;
-gap:20px;
-padding:20px 0;
-border-bottom:1px solid var(--border)
+gap:10px;
+margin-top:14px;
+flex-wrap:wrap;
 }
 
-.toast{
-position:fixed;
-bottom:20px;
-right:20px;
-background:var(--dark);
-color:#fff;
-padding:14px 20px;
-border-radius:12px;
-opacity:0;
-transition:.3s
+textarea#bulkQuestions{
+min-height:220px;
+font-family:monospace;
 }
 
-.toast.show{
-opacity:1
+.resource-link{
+color:var(--green);
+text-decoration:none;
+font-weight:600;
+}
+
+.resource-link:hover{text-decoration:underline}
+
+.logout{
+margin-top:30px;
+padding:0 24px;
 }
 
 .empty{
 text-align:center;
-padding:40px;
-color:var(--muted)
+padding:50px 20px;
+color:var(--muted);
 }
 
-@media(max-width:900px){
-
-.stats{
-grid-template-columns:repeat(2,1fr)
+@media(max-width:950px){
+.stats{grid-template-columns:repeat(2,1fr)}
+.grid-2{grid-template-columns:1fr}
 }
 
-.sidebar{
-width:200px
+@media(max-width:750px){
+.sidebar{position:relative;width:100%;height:auto}
+.main{margin-left:0;padding:20px}
+.stats{grid-template-columns:1fr}
 }
-
-.main{
-margin-left:200px
-}
-
-}
-
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
+<div id="loginScreen">
+<div class="login-box">
+<div class="logo">Bio<span>Learn</span></div>
+<p class="sub">Biology Administration Portal</p>
 
-<div id="authScreen">
-
-<div class="abox">
-
-<div class="logo">
-Bio<span>Learn</span>
+<div class="form-group">
+<label>Admin Username</label>
+<input type="text" id="username" placeholder="Enter username">
 </div>
 
-<p style="margin:10px 0 30px;color:var(--muted)">
-Administration Portal
-</p>
-
-<div class="fg">
-<label>Username</label>
-<input type="text" id="lu">
-</div>
-
-<div class="fg">
+<div class="form-group">
 <label>Password</label>
-<input type="password" id="lp">
+<input type="password" id="password" placeholder="Enter password">
 </div>
 
-<p id="le" style="color:red;font-size:.85rem"></p>
-
-<button class="btn btn-primary"
-style="width:100%"
-onclick="doLogin()">
-Sign In
-</button>
-
+<button class="btn btn-primary btn-full" onclick="login()">Sign In</button>
+<p class="err" id="loginError"></p>
 </div>
-
 </div>
 
 <!-- APP -->
-
 <div id="app">
-
 <aside class="sidebar">
-
-<div class="logo">
-Bio<span>Learn</span>
+<div class="logo">Bio<span>Learn</span></div>
+<div class="admin-mail">
+Administrator<br>
+Ibrahim.akinsola@miva.edu.ng
 </div>
 
-<div class="ni" onclick="nav('dashboard')">
-🏠 Dashboard
-</div>
+<div class="nav-title">Administration</div>
 
-<div class="ni" onclick="nav('questions')">
-❓ Questions
-</div>
+<div class="nav-item active" onclick="showPage('dashboard',this)">🏠 Dashboard</div>
+<div class="nav-item" onclick="showPage('questions',this)">❓ Questions</div>
+<div class="nav-item" onclick="showPage('notes',this)">📚 Lesson Notes</div>
+<div class="nav-item" onclick="showPage('tests',this)">🧪 Tests</div>
+<div class="nav-item" onclick="showPage('assignments',this)">📝 Assignments</div>
+<div class="nav-item" onclick="showPage('resources',this)">📁 Resources</div>
+<div class="nav-item" onclick="showPage('students',this)">🎓 Students</div>
+<div class="nav-item" onclick="showPage('results',this)">📊 Results</div>
 
-<div class="ni" onclick="nav('notes')">
-📚 Notes
+<div class="logout">
+<button class="btn btn-danger btn-full" onclick="logout()">Logout</button>
 </div>
-
-<div class="ni" onclick="nav('tests')">
-🧪 Tests
-</div>
-
-<div class="ni" onclick="nav('resources')">
-📁 Resources
-</div>
-
-<div class="ni" onclick="nav('results')">
-📊 Student Results
-</div>
-
 </aside>
 
 <main class="main">
 
 <!-- DASHBOARD -->
-
-<div class="page active" id="dashboard">
-
-<h1 style="margin-bottom:30px">
-Dashboard
-</h1>
+<section class="page active" id="page-dashboard">
+<div class="page-header">
+<h1>Dashboard</h1>
+<p>Manage all biology learning activities.</p>
+</div>
 
 <div class="stats">
-
-<div class="stat">
-<div class="sv" id="dQuestions">0</div>
-<div>Total Questions</div>
+<div class="stat-card">
+<h2 id="totalQuestions">0</h2>
+<p>Total Questions</p>
 </div>
 
-<div class="stat">
-<div class="sv" id="dNotes">0</div>
-<div>Lesson Notes</div>
+<div class="stat-card">
+<h2 id="totalNotes">0</h2>
+<p>Lesson Notes</p>
 </div>
 
-<div class="stat">
-<div class="sv" id="dTests">0</div>
-<div>Tests</div>
+<div class="stat-card">
+<h2 id="totalTests">0</h2>
+<p>Tests</p>
 </div>
 
-<div class="stat">
-<div class="sv" id="dStudents">0</div>
-<div>Students</div>
+<div class="stat-card">
+<h2 id="totalStudents">0</h2>
+<p>Students</p>
+</div>
 </div>
 
+<div class="grid-2">
+<div class="card">
+<div class="card-title">Recent Questions</div>
+<div id="recentQuestions"></div>
 </div>
 
+<div class="card">
+<div class="card-title">Recent Notes</div>
+<div id="recentNotes"></div>
 </div>
+</div>
+</section>
 
 <!-- QUESTIONS -->
-
-<div class="page" id="questions">
-
-<h1 style="margin-bottom:20px">
-Questions Management
-</h1>
-
-<!-- PASTE QUESTIONS -->
+<section class="page" id="page-questions">
+<div class="page-header">
+<h1>Questions Bank</h1>
+<p>Add, edit and delete questions.</p>
+</div>
 
 <div class="card">
+<div class="card-title">Add New Question</div>
 
-<h3 style="margin-bottom:20px">
-📋 Paste & Parse Questions
-</h3>
-
-<p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">
-
-Format Example:<br><br>
-
-What is Biology?<br>
-A. Study of life<br>
-B. Study of rocks<br>
-C. Study of soil<br>
-D. Study of water<br>
-ANSWER: A
-
-</p>
-
-<div class="fg">
+<div class="grid-2">
+<div>
+<div class="form-group">
 <label>Class</label>
-
-<select id="bulkClass">
-<option>JSS 1</option>
-<option>JSS 2</option>
-<option>JSS 3</option>
-<option>SS 1</option>
-<option>SS 2</option>
-<option>SS 3</option>
-</select>
-
-</div>
-
-<div class="fg">
-<label>Topic</label>
-<input type="text" id="bulkTopic">
-</div>
-
-<div class="fg">
-<label>Paste Questions</label>
-<textarea id="bulkQuestions"></textarea>
-</div>
-
-<button class="btn btn-primary"
-onclick="parseBulkQuestions()">
-Parse & Save Questions
-</button>
-
-</div>
-
-<!-- SINGLE QUESTION -->
-
-<div class="card">
-
-<h3 style="margin-bottom:20px">
-➕ Add / Edit Question
-</h3>
-
-<input type="hidden" id="editQuestionId">
-
-<div class="fg">
-<label>Class</label>
-
 <select id="qClass">
 <option>JSS 1</option>
 <option>JSS 2</option>
@@ -436,85 +475,87 @@ Parse & Save Questions
 <option>SS 2</option>
 <option>SS 3</option>
 </select>
-
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Topic</label>
-<input type="text" id="qTopic">
+<input type="text" id="qTopic" placeholder="Example: Cell Biology">
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Question</label>
-<textarea id="qText"></textarea>
+<textarea id="qQuestion"></textarea>
+</div>
 </div>
 
-<div class="fg">
+<div>
+<div class="form-group">
 <label>Option A</label>
 <input type="text" id="qA">
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Option B</label>
 <input type="text" id="qB">
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Option C</label>
 <input type="text" id="qC">
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Option D</label>
 <input type="text" id="qD">
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Correct Answer</label>
-
 <select id="qAnswer">
-<option value="0">A</option>
-<option value="1">B</option>
-<option value="2">C</option>
-<option value="3">D</option>
+<option value="0">Option A</option>
+<option value="1">Option B</option>
+<option value="2">Option C</option>
+<option value="3">Option D</option>
 </select>
-
 </div>
 
-<button class="btn btn-primary"
-onclick="saveQuestion()">
-Save Question
-</button>
-
+<button class="btn btn-primary" onclick="saveQuestion()">Save Question</button>
 </div>
-
-<!-- ALL QUESTIONS -->
+</div>
+</div>
 
 <div class="card">
+<div class="card-title">Paste Multiple Questions</div>
+<p style="margin-bottom:15px;color:var(--muted)">
+Format:<br><br>
+Question: What is biology?<br>
+A. Study of life<br>
+B. Study of water<br>
+C. Study of air<br>
+D. Study of land<br>
+Answer: A
+</p>
 
-<h3 style="margin-bottom:20px">
-📚 All Questions
-</h3>
-
-<div id="questionList"></div>
-
+<textarea id="bulkQuestions" placeholder="Paste questions here..."></textarea>
+<br><br>
+<button class="btn btn-amber" onclick="pasteQuestions()">Import Questions</button>
 </div>
 
-</div>
+<div id="questionsList"></div>
+</section>
 
 <!-- NOTES -->
-
-<div class="page" id="notes">
-
-<h1 style="margin-bottom:20px">
-Lesson Notes
-</h1>
+<section class="page" id="page-notes">
+<div class="page-header">
+<h1>Lesson Notes</h1>
+<p>Create and manage notes.</p>
+</div>
 
 <div class="card">
-
-<div class="fg">
+<div class="grid-2">
+<div>
+<div class="form-group">
 <label>Class</label>
-
 <select id="noteClass">
 <option>JSS 1</option>
 <option>JSS 2</option>
@@ -523,595 +564,645 @@ Lesson Notes
 <option>SS 2</option>
 <option>SS 3</option>
 </select>
-
 </div>
 
-<div class="fg">
+<div class="form-group">
 <label>Title</label>
 <input type="text" id="noteTitle">
 </div>
-
-<div class="fg">
-<label>Content</label>
-<textarea id="noteContent"></textarea>
 </div>
 
-<button class="btn btn-primary"
-onclick="saveNote()">
-Save Note
-</button>
-
+<div>
+<div class="form-group">
+<label>Topic</label>
+<input type="text" id="noteTopic">
+</div>
+</div>
 </div>
 
-<div class="card">
+<div class="form-group">
+<label>Lesson Content</label>
+<textarea id="noteContent" style="min-height:250px"></textarea>
+</div>
+
+<button class="btn btn-primary" onclick="saveNote()">Save Note</button>
+</div>
 
 <div id="notesList"></div>
-
-</div>
-
-</div>
+</section>
 
 <!-- TESTS -->
-
-<div class="page" id="tests">
-
-<h1 style="margin-bottom:20px">
-Tests
-</h1>
+<section class="page" id="page-tests">
+<div class="page-header">
+<h1>Tests & Exams</h1>
+<p>Create tests for students.</p>
+</div>
 
 <div class="card">
-
-<p>
-Create and manage tests using uploaded questions.
-</p>
-
+<div class="grid-2">
+<div>
+<div class="form-group">
+<label>Test Title</label>
+<input type="text" id="testTitle">
 </div>
 
+<div class="form-group">
+<label>Class</label>
+<select id="testClass">
+<option>JSS 1</option>
+<option>JSS 2</option>
+<option>JSS 3</option>
+<option>SS 1</option>
+<option>SS 2</option>
+<option>SS 3</option>
+</select>
 </div>
+</div>
+
+<div>
+<div class="form-group">
+<label>Duration (Minutes)</label>
+<input type="number" id="testDuration">
+</div>
+
+<div class="form-group">
+<label>Type</label>
+<select id="testType">
+<option value="test">Test</option>
+<option value="exam">Exam</option>
+</select>
+</div>
+</div>
+</div>
+
+<button class="btn btn-primary" onclick="saveTest()">Create Test</button>
+</div>
+
+<div id="testsList"></div>
+</section>
+
+<!-- ASSIGNMENTS -->
+<section class="page" id="page-assignments">
+<div class="page-header">
+<h1>Assignments</h1>
+<p>Create assignments for students.</p>
+</div>
+
+<div class="card">
+<div class="form-group">
+<label>Assignment Title</label>
+<input type="text" id="assignmentTitle">
+</div>
+
+<div class="form-group">
+<label>Class</label>
+<select id="assignmentClass">
+<option>JSS 1</option>
+<option>JSS 2</option>
+<option>JSS 3</option>
+<option>SS 1</option>
+<option>SS 2</option>
+<option>SS 3</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Assignment Details</label>
+<textarea id="assignmentContent"></textarea>
+</div>
+
+<button class="btn btn-primary" onclick="saveAssignment()">Save Assignment</button>
+</div>
+
+<div id="assignmentList"></div>
+</section>
 
 <!-- RESOURCES -->
-
-<div class="page" id="resources">
-
-<h1 style="margin-bottom:20px">
-Resources
-</h1>
+<section class="page" id="page-resources">
+<div class="page-header">
+<h1>Resources</h1>
+<p>Add PDF, video and learning links.</p>
+</div>
 
 <div class="card">
-
-<p>
-Upload Biology PDFs, videos and materials here.
-</p>
-
+<div class="form-group">
+<label>Resource Title</label>
+<input type="text" id="resourceTitle">
 </div>
 
+<div class="form-group">
+<label>Resource Link</label>
+<input type="text" id="resourceLink" placeholder="https://...">
 </div>
+
+<div class="form-group">
+<label>Description</label>
+<textarea id="resourceDescription"></textarea>
+</div>
+
+<button class="btn btn-primary" onclick="saveResource()">Save Resource</button>
+</div>
+
+<div id="resourceList"></div>
+</section>
+
+<!-- STUDENTS -->
+<section class="page" id="page-students">
+<div class="page-header">
+<h1>Students</h1>
+<p>Registered students information.</p>
+</div>
+
+<div class="card table-wrap">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Username</th>
+<th>Class</th>
+</tr>
+</thead>
+<tbody id="studentTable"></tbody>
+</table>
+</div>
+</section>
 
 <!-- RESULTS -->
-
-<div class="page" id="results">
-
-<h1 style="margin-bottom:20px">
-Student Results
-</h1>
-
-<div class="card">
-
-<div id="resultsList"></div>
-
+<section class="page" id="page-results">
+<div class="page-header">
+<h1>Results & Progress</h1>
+<p>View all students results.</p>
 </div>
 
+<div class="card table-wrap">
+<table>
+<thead>
+<tr>
+<th>Student</th>
+<th>Test</th>
+<th>Score</th>
+<th>Percentage</th>
+</tr>
+</thead>
+<tbody id="resultsTable"></tbody>
+</table>
 </div>
+</section>
 
 </main>
-
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
+const ADMIN_USERNAME = 'Ibrahim.akinsola@miva.edu.ng';
+const ADMIN_PASSWORD = 'Akinsola8792$';
 
-/* DATABASE */
+function login(){
+const u=document.getElementById('username').value.trim();
+const p=document.getElementById('password').value.trim();
 
-const DB = {
-
-K:{
-q:'bl_questions',
-n:'bl_notes',
-t:'bl_tests',
-s:'bl_students',
-r:'bl_results'
-},
-
-get(k){
-return JSON.parse(localStorage.getItem(k)||'[]')
-},
-
-set(k,v){
-localStorage.setItem(k,JSON.stringify(v))
-},
-
-uid(){
-return Date.now().toString(36)+Math.random().toString(36).slice(2,7)
-}
-
-};
-
-/* LOGIN */
-
-function doLogin(){
-
-const u =
-document.getElementById('lu').value.trim();
-
-const p =
-document.getElementById('lp').value.trim();
-
-if(
-u === 'Ibrahim.akinsola@miva.edu.ng' &&
-p === 'Akinsola8792$'
-){
-
-document.getElementById('authScreen')
-.style.display='none';
-
-document.getElementById('app')
-.style.display='block';
-
-loadDashboard();
-
-renderQuestions();
-
-renderNotes();
-
-renderResults();
-
-toast('Welcome Admin 👋');
-
+if(u===ADMIN_USERNAME && p===ADMIN_PASSWORD){
+localStorage.setItem('biolearn_admin','true');
+document.getElementById('loginScreen').style.display='none';
+document.getElementById('app').style.display='block';
+loadAll();
 }else{
-
-document.getElementById('le')
-.textContent='Invalid Username or Password';
-
+document.getElementById('loginError').textContent='Invalid username or password';
+}
 }
 
+if(localStorage.getItem('biolearn_admin')==='true'){
+document.getElementById('loginScreen').style.display='none';
+document.getElementById('app').style.display='block';
+setTimeout(loadAll,100);
 }
 
-/* NAVIGATION */
-
-function nav(id){
-
-document
-.querySelectorAll('.page')
-.forEach(p=>p.classList.remove('active'));
-
-document
-.getElementById(id)
-.classList.add('active');
-
+function logout(){
+localStorage.removeItem('biolearn_admin');
+location.reload();
 }
 
-/* DASHBOARD */
+function showPage(page,el){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById('page-'+page).classList.add('active');
 
-function loadDashboard(){
-
-document.getElementById('dQuestions')
-.textContent =
-DB.get(DB.K.q).length;
-
-document.getElementById('dNotes')
-.textContent =
-DB.get(DB.K.n).length;
-
-document.getElementById('dTests')
-.textContent =
-DB.get(DB.K.t).length;
-
-document.getElementById('dStudents')
-.textContent =
-DB.get(DB.K.s).length;
-
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+el.classList.add('active');
 }
 
-/* SAVE QUESTION */
+function getData(key){
+return JSON.parse(localStorage.getItem(key)||'[]');
+}
 
+function setData(key,data){
+localStorage.setItem(key,JSON.stringify(data));
+}
+
+function uid(){
+return Date.now()+Math.random().toString(16).slice(2);
+}
+
+/* QUESTIONS */
 function saveQuestion(){
+const questions=getData('bl_questions');
 
-const questions = DB.get(DB.K.q);
-
-const editId =
-document.getElementById('editQuestionId').value;
-
-const questionData = {
-
-id: editId || DB.uid(),
-
-class:
-document.getElementById('qClass').value,
-
-topic:
-document.getElementById('qTopic').value,
-
-question:
-document.getElementById('qText').value,
-
+const q={
+id:uid(),
+class:document.getElementById('qClass').value,
+topic:document.getElementById('qTopic').value,
+question:document.getElementById('qQuestion').value,
 options:[
 document.getElementById('qA').value,
 document.getElementById('qB').value,
 document.getElementById('qC').value,
 document.getElementById('qD').value
 ],
-
-answer:Number(
-document.getElementById('qAnswer').value
-)
-
+answer:Number(document.getElementById('qAnswer').value)
 };
 
-if(editId){
-
-const index =
-questions.findIndex(q=>q.id===editId);
-
-questions[index] = questionData;
-
-toast('Question Updated');
-
-}else{
-
-questions.push(questionData);
-
-toast('Question Added');
-
-}
-
-DB.set(DB.K.q,questions);
-
-clearQuestionForm();
-
+questions.push(q);
+setData('bl_questions',questions);
 renderQuestions();
-
-loadDashboard();
-
+updateDashboard();
+alert('Question saved successfully');
 }
 
-/* CLEAR FORM */
+function pasteQuestions(){
+const text=document.getElementById('bulkQuestions').value;
+if(!text)return;
 
-function clearQuestionForm(){
-
-document.getElementById('editQuestionId').value='';
-document.getElementById('qTopic').value='';
-document.getElementById('qText').value='';
-document.getElementById('qA').value='';
-document.getElementById('qB').value='';
-document.getElementById('qC').value='';
-document.getElementById('qD').value='';
-document.getElementById('qAnswer').value='0';
-
-}
-
-/* RENDER QUESTIONS */
-
-function renderQuestions(){
-
-const questions = DB.get(DB.K.q);
-
-document.getElementById('questionList').innerHTML =
-
-questions.length ?
-
-questions.map(q=>`
-
-<div class="rr">
-
-<div style="width:70%">
-
-<div style="font-weight:700;margin-bottom:8px">
-${q.question}
-</div>
-
-<div style="font-size:.85rem;color:gray;margin-bottom:8px">
-${q.class} • ${q.topic}
-</div>
-
-<div style="font-size:.85rem;line-height:1.8">
-
-A. ${q.options[0]}<br>
-B. ${q.options[1]}<br>
-C. ${q.options[2]}<br>
-D. ${q.options[3]}
-
-</div>
-
-</div>
-
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-
-<button class="btn btn-secondary"
-onclick="editQuestion('${q.id}')">
-Edit
-</button>
-
-<button class="btn btn-danger"
-onclick="deleteQuestion('${q.id}')">
-Delete
-</button>
-
-</div>
-
-</div>
-
-`).join('')
-
-:
-
-'<div class="empty">No Questions Added Yet</div>';
-
-}
-
-/* EDIT QUESTION */
-
-function editQuestion(id){
-
-const q =
-DB.get(DB.K.q).find(x=>x.id===id);
-
-if(!q) return;
-
-document.getElementById('editQuestionId').value=q.id;
-document.getElementById('qClass').value=q.class;
-document.getElementById('qTopic').value=q.topic;
-document.getElementById('qText').value=q.question;
-document.getElementById('qA').value=q.options[0];
-document.getElementById('qB').value=q.options[1];
-document.getElementById('qC').value=q.options[2];
-document.getElementById('qD').value=q.options[3];
-document.getElementById('qAnswer').value=q.answer;
-
-window.scrollTo({
-top:0,
-behavior:'smooth'
-});
-
-}
-
-/* DELETE QUESTION */
-
-function deleteQuestion(id){
-
-if(!confirm('Delete this question?'))
-return;
-
-let questions = DB.get(DB.K.q);
-
-questions =
-questions.filter(q=>q.id!==id);
-
-DB.set(DB.K.q,questions);
-
-renderQuestions();
-
-loadDashboard();
-
-toast('Question Deleted');
-
-}
-
-/* BULK PARSER */
-
-function parseBulkQuestions(){
-
-const text =
-document.getElementById('bulkQuestions').value.trim();
-
-const cls =
-document.getElementById('bulkClass').value;
-
-const topic =
-document.getElementById('bulkTopic').value;
-
-if(!text){
-
-toast('Paste questions first');
-
-return;
-
-}
-
-let questions = DB.get(DB.K.q);
-
-const blocks =
-text.split(/ANSWER:/i);
-
-let added = 0;
+const blocks=text.split('Question:').filter(Boolean);
+const questions=getData('bl_questions');
 
 blocks.forEach(block=>{
+const lines=block.trim().split('\n');
+const question=lines[0].trim();
+const options=[];
+let answer=0;
 
-const lines =
-block.trim()
-.split('\n')
-.map(x=>x.trim())
-.filter(Boolean);
-
-if(lines.length < 5)
-return;
-
-let answer = 0;
-
-const answerLine =
-block.toUpperCase();
-
-if(answerLine.includes('B'))
-answer = 1;
-
-if(answerLine.includes('C'))
-answer = 2;
-
-if(answerLine.includes('D'))
-answer = 3;
+lines.forEach(line=>{
+if(line.startsWith('A.')) options[0]=line.replace('A.','').trim();
+if(line.startsWith('B.')) options[1]=line.replace('B.','').trim();
+if(line.startsWith('C.')) options[2]=line.replace('C.','').trim();
+if(line.startsWith('D.')) options[3]=line.replace('D.','').trim();
+if(line.startsWith('Answer:')){
+const ans=line.replace('Answer:','').trim();
+answer=['A','B','C','D'].indexOf(ans);
+}
+});
 
 questions.push({
-
-id:DB.uid(),
-
-class:cls,
-
-topic:topic,
-
-question:lines[0],
-
-options:[
-lines[1].replace(/^A[\).\s-]*/i,''),
-lines[2].replace(/^B[\).\s-]*/i,''),
-lines[3].replace(/^C[\).\s-]*/i,''),
-lines[4].replace(/^D[\).\s-]*/i,'')
-],
-
-answer:answer
-
+id:uid(),
+class:'JSS 1',
+topic:'Imported',
+question,
+options,
+answer
+});
 });
 
-added++;
-
-});
-
-DB.set(DB.K.q,questions);
-
-document.getElementById('bulkQuestions').value='';
-
+setData('bl_questions',questions);
 renderQuestions();
+updateDashboard();
+alert('Questions imported successfully');
+}
 
-loadDashboard();
+function renderQuestions(){
+const questions=getData('bl_questions');
+const box=document.getElementById('questionsList');
 
-toast(added+' Questions Added');
+if(!questions.length){
+box.innerHTML='<div class="empty">No questions added yet.</div>';
+return;
+}
 
+box.innerHTML=questions.map(q=>`
+<div class="question-box">
+<div class="badge badge-green">${q.class}</div>
+<div class="question-title">${q.question}</div>
+<div class="option">A. ${q.options[0]}</div>
+<div class="option">B. ${q.options[1]}</div>
+<div class="option">C. ${q.options[2]}</div>
+<div class="option">D. ${q.options[3]}</div>
+<div class="option"><strong>Correct:</strong> ${['A','B','C','D'][q.answer]}</div>
+
+<div class="actions">
+<button class="btn btn-secondary" onclick="editQuestion('${q.id}')">Edit</button>
+<button class="btn btn-danger" onclick="deleteQuestion('${q.id}')">Delete</button>
+</div>
+</div>
+`).join('');
+}
+
+function deleteQuestion(id){
+let questions=getData('bl_questions');
+questions=questions.filter(q=>q.id!==id);
+setData('bl_questions',questions);
+renderQuestions();
+updateDashboard();
+}
+
+function editQuestion(id){
+const questions=getData('bl_questions');
+const q=questions.find(x=>x.id===id);
+if(!q)return;
+
+const newQuestion=prompt('Edit Question',q.question);
+if(newQuestion!==null){
+q.question=newQuestion;
+setData('bl_questions',questions);
+renderQuestions();
+}
 }
 
 /* NOTES */
-
 function saveNote(){
-
-const notes =
-DB.get(DB.K.n);
+const notes=getData('bl_notes');
 
 notes.push({
-
-id:DB.uid(),
-
-class:
-document.getElementById('noteClass').value,
-
-title:
-document.getElementById('noteTitle').value,
-
-content:
-document.getElementById('noteContent').value
-
+id:uid(),
+class:document.getElementById('noteClass').value,
+title:document.getElementById('noteTitle').value,
+topic:document.getElementById('noteTopic').value,
+content:document.getElementById('noteContent').value
 });
 
-DB.set(DB.K.n,notes);
-
+setData('bl_notes',notes);
 renderNotes();
-
-loadDashboard();
-
-toast('Note Saved');
-
+updateDashboard();
+alert('Lesson note saved');
 }
 
-/* RENDER NOTES */
-
 function renderNotes(){
+const notes=getData('bl_notes');
+const box=document.getElementById('notesList');
 
-const notes = DB.get(DB.K.n);
+if(!notes.length){
+box.innerHTML='<div class="empty">No notes available.</div>';
+return;
+}
 
-document.getElementById('notesList').innerHTML =
+box.innerHTML=notes.map(n=>`
+<div class="note-box">
+<div class="badge badge-amber">${n.class}</div>
+<h3 style="margin:12px 0">${n.title}</h3>
+<p style="color:var(--muted);white-space:pre-wrap">${n.content.slice(0,300)}...</p>
 
-notes.length ?
-
-notes.map(n=>`
-
-<div class="rr">
-
-<div>
-
-<div style="font-weight:700">
-${n.title}
+<div class="actions">
+<button class="btn btn-secondary" onclick="editNote('${n.id}')">Edit</button>
+<button class="btn btn-danger" onclick="deleteNote('${n.id}')">Delete</button>
 </div>
-
-<div style="font-size:.85rem;color:gray">
-${n.class}
 </div>
+`).join('');
+}
 
+function editNote(id){
+const notes=getData('bl_notes');
+const note=notes.find(n=>n.id===id);
+if(!note)return;
+
+const newTitle=prompt('Edit Title',note.title);
+if(newTitle!==null){
+note.title=newTitle;
+setData('bl_notes',notes);
+renderNotes();
+}
+}
+
+function deleteNote(id){
+let notes=getData('bl_notes');
+notes=notes.filter(n=>n.id!==id);
+setData('bl_notes',notes);
+renderNotes();
+updateDashboard();
+}
+
+/* TESTS */
+function saveTest(){
+const tests=getData('bl_tests');
+const questions=getData('bl_questions');
+
+const selectedClass=document.getElementById('testClass').value;
+const classQuestions=questions.filter(q=>q.class===selectedClass);
+
+const test={
+id:uid(),
+title:document.getElementById('testTitle').value,
+class:selectedClass,
+duration:document.getElementById('testDuration').value,
+type:document.getElementById('testType').value,
+questionIds:classQuestions.map(q=>q.id),
+active:true
+};
+
+tests.push(test);
+setData('bl_tests',tests);
+renderTests();
+updateDashboard();
+alert('Test created successfully');
+}
+
+function renderTests(){
+const tests=getData('bl_tests');
+const box=document.getElementById('testsList');
+
+if(!tests.length){
+box.innerHTML='<div class="empty">No tests created.</div>';
+return;
+}
+
+box.innerHTML=tests.map(t=>`
+<div class="test-box">
+<div class="badge badge-green">${t.class}</div>
+<h3 style="margin:10px 0">${t.title}</h3>
+<p style="color:var(--muted)">${t.duration} Minutes · ${t.type}</p>
+
+<div class="actions">
+<button class="btn btn-danger" onclick="deleteTest('${t.id}')">Delete</button>
 </div>
-
 </div>
+`).join('');
+}
 
-`).join('')
+function deleteTest(id){
+let tests=getData('bl_tests');
+tests=tests.filter(t=>t.id!==id);
+setData('bl_tests',tests);
+renderTests();
+updateDashboard();
+}
 
-:
+/* ASSIGNMENTS */
+function saveAssignment(){
+const assignments=getData('bl_assignments');
 
-'<div class="empty">No Notes Yet</div>';
+assignments.push({
+id:uid(),
+title:document.getElementById('assignmentTitle').value,
+class:document.getElementById('assignmentClass').value,
+content:document.getElementById('assignmentContent').value
+});
 
+setData('bl_assignments',assignments);
+renderAssignments();
+alert('Assignment saved');
+}
+
+function renderAssignments(){
+const assignments=getData('bl_assignments');
+const box=document.getElementById('assignmentList');
+
+if(!assignments.length){
+box.innerHTML='<div class="empty">No assignments available.</div>';
+return;
+}
+
+box.innerHTML=assignments.map(a=>`
+<div class="assignment-box">
+<div class="badge badge-amber">${a.class}</div>
+<h3 style="margin:10px 0">${a.title}</h3>
+<p style="white-space:pre-wrap;color:var(--muted)">${a.content}</p>
+
+<div class="actions">
+<button class="btn btn-danger" onclick="deleteAssignment('${a.id}')">Delete</button>
+</div>
+</div>
+`).join('');
+}
+
+function deleteAssignment(id){
+let assignments=getData('bl_assignments');
+assignments=assignments.filter(a=>a.id!==id);
+setData('bl_assignments',assignments);
+renderAssignments();
+}
+
+/* RESOURCES */
+function saveResource(){
+const resources=getData('bl_resources');
+
+resources.push({
+id:uid(),
+title:document.getElementById('resourceTitle').value,
+link:document.getElementById('resourceLink').value,
+description:document.getElementById('resourceDescription').value
+});
+
+setData('bl_resources',resources);
+renderResources();
+alert('Resource added');
+}
+
+function renderResources(){
+const resources=getData('bl_resources');
+const box=document.getElementById('resourceList');
+
+if(!resources.length){
+box.innerHTML='<div class="empty">No resources available.</div>';
+return;
+}
+
+box.innerHTML=resources.map(r=>`
+<div class="resource-box">
+<h3>${r.title}</h3>
+<p style="margin:10px 0;color:var(--muted)">${r.description}</p>
+<a class="resource-link" href="${r.link}" target="_blank">Open Resource</a>
+
+<div class="actions">
+<button class="btn btn-danger" onclick="deleteResource('${r.id}')">Delete</button>
+</div>
+</div>
+`).join('');
+}
+
+function deleteResource(id){
+let resources=getData('bl_resources');
+resources=resources.filter(r=>r.id!==id);
+setData('bl_resources',resources);
+renderResources();
+}
+
+/* STUDENTS */
+function renderStudents(){
+const students=getData('bl_students');
+const table=document.getElementById('studentTable');
+
+if(!students.length){
+table.innerHTML='<tr><td colspan="3">No students registered</td></tr>';
+return;
+}
+
+table.innerHTML=students.map(s=>`
+<tr>
+<td>${s.name||'Unknown'}</td>
+<td>${s.username}</td>
+<td>${s.class}</td>
+</tr>
+`).join('');
 }
 
 /* RESULTS */
-
 function renderResults(){
+const results=getData('bl_results');
+const students=getData('bl_students');
+const tests=getData('bl_tests');
+const table=document.getElementById('resultsTable');
 
-const results =
-DB.get(DB.K.r);
-
-document.getElementById('resultsList').innerHTML =
-
-results.length ?
-
-results.map(r=>`
-
-<div class="rr">
-
-<div>
-
-<div style="font-weight:700">
-${r.score}/${r.total}
-</div>
-
-<div style="font-size:.85rem;color:gray">
-${new Date(r.submittedAt).toLocaleString()}
-</div>
-
-</div>
-
-</div>
-
-`).join('')
-
-:
-
-'<div class="empty">No Results Yet</div>';
-
+if(!results.length){
+table.innerHTML='<tr><td colspan="4">No results yet</td></tr>';
+return;
 }
 
-/* TOAST */
+table.innerHTML=results.map(r=>{
+const student=students.find(s=>s.id===r.studentId);
+const test=tests.find(t=>t.id===r.testId);
+const percent=Math.round((r.score/r.total)*100);
 
-function toast(msg){
-
-const t =
-document.getElementById('toast');
-
-t.textContent = msg;
-
-t.classList.add('show');
-
-setTimeout(()=>{
-
-t.classList.remove('show');
-
-},3000);
-
+return `
+<tr>
+<td>${student?student.name:'Unknown'}</td>
+<td>${test?test.title:'Test'}</td>
+<td>${r.score}/${r.total}</td>
+<td>${percent}%</td>
+</tr>
+`;
+}).join('');
 }
 
+/* DASHBOARD */
+function updateDashboard(){
+document.getElementById('totalQuestions').textContent=getData('bl_questions').length;
+document.getElementById('totalNotes').textContent=getData('bl_notes').length;
+document.getElementById('totalTests').textContent=getData('bl_tests').length;
+document.getElementById('totalStudents').textContent=getData('bl_students').length;
+
+const rq=getData('bl_questions').slice(-3).reverse();
+document.getElementById('recentQuestions').innerHTML=rq.length ? rq.map(q=>`
+<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+<div style="font-weight:600">${q.question}</div>
+<div style="font-size:.82rem;color:var(--muted)">${q.class}</div>
+</div>
+`).join('') : 'No questions yet';
+
+const rn=getData('bl_notes').slice(-3).reverse();
+document.getElementById('recentNotes').innerHTML=rn.length ? rn.map(n=>`
+<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+<div style="font-weight:600">${n.title}</div>
+<div style="font-size:.82rem;color:var(--muted)">${n.class}</div>
+</div>
+`).join('') : 'No notes yet';
+}
+
+function loadAll(){
+updateDashboard();
+renderQuestions();
+renderNotes();
+renderTests();
+renderAssignments();
+renderResources();
+renderStudents();
+renderResults();
+}
 </script>
-
 </body>
 </html>
+
