@@ -371,12 +371,12 @@ color:var(--muted);
 
 <div class="form-group">
 <label>Admin Username</label>
-<input type="text" id="username" placeholder="Enter username">
+<input type="text" id="username" placeholder="Enter username" onkeydown="if(event.key==='Enter')login()">
 </div>
 
 <div class="form-group">
 <label>Password</label>
-<input type="password" id="password" placeholder="Enter password">
+<input type="password" id="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()">
 </div>
 
 <button class="btn btn-primary btn-full" onclick="login()">Sign In</button>
@@ -631,7 +631,6 @@ Answer: A
 <option value="test">Test</option>
 <option value="exam">Exam</option>
 </select>
-</div>
 </div>
 </div>
 
@@ -921,8 +920,7 @@ const notes=getData('bl_notes');
 notes.push({
 id:uid(),
 class:document.getElementById('noteClass').value,
-title:document.getElementById('noteTitle').value,
-topic:document.getElementById('noteTopic').value,
+title:document.getElementById('noteTitle').value, topic:document.getElementById('noteTopic').value,
 content:document.getElementById('noteContent').value
 });
 
@@ -1191,7 +1189,6 @@ document.getElementById('recentNotes').innerHTML=rn.length ? rn.map(n=>`
 </div>
 `).join('') : 'No notes yet';
 }
-
 function loadAll(){
 updateDashboard();
 renderQuestions();
@@ -1202,144 +1199,6 @@ renderResources();
 renderStudents();
 renderResults();
 }
-
-
-/* ===============================
-   IMPROVED CLASS-BASED QUESTION SYSTEM
-================================ */
-
-function importQuestions(){
-  const raw=document.getElementById('bulkQuestions').value.trim();
-  const cls=document.getElementById('qClass').value;
-  const topic=document.getElementById('qTopic').value.trim();
-
-  if(!raw){
-    alert('Paste questions first');
-    return;
-  }
-
-  const blocks=raw.split('Question:');
-  let count=0;
-
-  blocks.forEach(block=>{
-    block=block.trim();
-    if(!block)return;
-
-    const lines=block.split('
-').map(x=>x.trim());
-    const question=lines[0];
-
-    let options=[];
-    let answer='';
-
-    lines.forEach(line=>{
-      if(line.startsWith('A.')||line.startsWith('B.')||line.startsWith('C.')||line.startsWith('D.')){
-        options.push(line.substring(2).trim());
-      }
-
-      if(line.startsWith('Answer:')){
-        answer=line.replace('Answer:','').trim();
-      }
-    });
-
-    const answerIndex={A:0,B:1,C:2,D:3}[answer];
-
-    if(question&&options.length===4){
-      DB.addQuestion({
-        class:cls,
-        topic:topic,
-        question:question,
-        options:options,
-        answer:answerIndex
-      });
-
-      count++;
-    }
-  });
-
-  alert(count+' questions imported successfully');
-  renderQuestions();
-}
-
-function renderQuestions(){
-  const cls=document.getElementById('filterClass').value;
-  const questions=DB.getQuestions(cls);
-  const container=document.getElementById('questionsContainer');
-
-  if(!questions.length){
-    container.innerHTML='<div class="empty"><div class="ei">📝</div><p>No questions found for this class.</p></div>';
-    return;
-  }
-
-  container.innerHTML=questions.map((q,i)=>`
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap">
-        <div style="flex:1">
-          <div style="display:flex;gap:10px;margin-bottom:10px">
-            <span class="bc">${q.class}</span>
-            <span class="bt">${q.topic}</span>
-          </div>
-
-          <h3 style="margin-bottom:12px">${i+1}. ${q.question}</h3>
-
-          <div style="line-height:2">
-            <div>A. ${q.options[0]}</div>
-            <div>B. ${q.options[1]}</div>
-            <div>C. ${q.options[2]}</div>
-            <div>D. ${q.options[3]}</div>
-          </div>
-
-          <div style="margin-top:12px;color:var(--green);font-weight:700">
-            Correct Answer: ${String.fromCharCode(65+q.answer)}
-          </div>
-        </div>
-
-        <div style="display:flex;gap:10px">
-          <button class="btn btn-primary" onclick="editQuestion('${q.id}')">Edit</button>
-          <button class="btn btn-danger" onclick="deleteQuestion('${q.id}')">Delete</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function editQuestion(id){
-  const all=DB.get(DB.K.questions);
-  const q=all.find(x=>x.id===id);
-
-  if(!q)return;
-
-  const newQuestion=prompt('Edit Question',q.question);
-  if(!newQuestion)return;
-
-  q.question=newQuestion;
-
-  DB.set(DB.K.questions,all);
-
-  renderQuestions();
-}
-
-function deleteQuestion(id){
-  if(confirm('Delete this question permanently?')){
-    let all=DB.get(DB.K.questions);
-    all=all.filter(x=>x.id!==id);
-    DB.set(DB.K.questions,all);
-    renderQuestions();
-  }
-}
-
-function generateStudentTest(studentClass,selectedTopic){
-  const questions=DB.getQuestions(studentClass,selectedTopic);
-
-  if(!questions.length){
-    alert('No questions found for this topic');
-    return [];
-  }
-
-  const shuffled=questions.sort(()=>0.5-Math.random());
-  return shuffled.slice(0,20);
-}
-
 </script>
 </body>
 </html>
