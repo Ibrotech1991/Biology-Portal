@@ -298,12 +298,19 @@ background:var(--amber-pale);
 color:#a06c00;
 }
 
-.question-box,.note-box,.resource-box,.assignment-box,.test-box{
+.question-box,.note-box,.resource-box,.assignment-box,.test-box,.class-section{
 background:#fff;
 border:1px solid var(--border);
 border-radius:14px;
 padding:18px;
 margin-bottom:18px;
+}
+
+.class-section h3 {
+color: var(--green);
+margin-bottom: 15px;
+padding-bottom: 8px;
+border-bottom: 1px solid var(--border);
 }
 
 .question-title{
@@ -390,7 +397,7 @@ color:var(--muted);
 <div class="logo">Bio<span>Learn</span></div>
 <div class="admin-mail">
 Administrator<br>
-Ibrahim.akinsola@miva.edu.ng
+ibrahim-dev
 </div>
 
 <div class="nav-title">Administration</div>
@@ -457,7 +464,7 @@ Ibrahim.akinsola@miva.edu.ng
 <section class="page" id="page-questions">
 <div class="page-header">
 <h1>Questions Bank</h1>
-<p>Add, edit and delete questions.</p>
+<p>Add, edit and delete questions. Organized by class.</p>
 </div>
 
 <div class="card">
@@ -595,7 +602,7 @@ Answer: A
 <section class="page" id="page-tests">
 <div class="page-header">
 <h1>Tests & Exams</h1>
-<p>Create tests for students.</p>
+<p>Create tests for students. Questions are automatically grouped by class.</p>
 </div>
 
 <div class="card">
@@ -620,6 +627,10 @@ Answer: A
 </div>
 
 <div>
+<div
+</div>
+
+<div>
 <div class="form-group">
 <label>Duration (Minutes)</label>
 <input type="number" id="testDuration">
@@ -631,6 +642,7 @@ Answer: A
 <option value="test">Test</option>
 <option value="exam">Exam</option>
 </select>
+</div>
 </div>
 </div>
 
@@ -752,8 +764,8 @@ Answer: A
 </div>
 
 <script>
-const ADMIN_USERNAME = 'Ibrahim.akinsola@miva.edu.ng';
-const ADMIN_PASSWORD = 'Akinsola8792$';
+const ADMIN_USERNAME = 'ibrahim-dev';
+const ADMIN_PASSWORD = 'parent1234';
 
 function login(){
 const u=document.getElementById('username').value.trim();
@@ -874,9 +886,16 @@ box.innerHTML='<div class="empty">No questions added yet.</div>';
 return;
 }
 
-box.innerHTML=questions.map(q=>`
+const classes = ['JSS 1', 'JSS 2', 'JSS 3', 'SS 1', 'SS 2', 'SS 3'];
+let html = '';
+
+classes.forEach(cls => {
+const classQuestions = questions.filter(q => q.class === cls);
+if(classQuestions.length > 0){
+html += `<div class="class-section"><h3>Class: ${cls}</h3>`;
+html += classQuestions.map(q => `
 <div class="question-box">
-<div class="badge badge-green">${q.class}</div>
+<div class="badge badge-green">${q.topic}</div>
 <div class="question-title">${q.question}</div>
 <div class="option">A. ${q.options[0]}</div>
 <div class="option">B. ${q.options[1]}</div>
@@ -890,6 +909,11 @@ box.innerHTML=questions.map(q=>`
 </div>
 </div>
 `).join('');
+html += `</div>`;
+}
+});
+
+box.innerHTML = html;
 }
 
 function deleteQuestion(id){
@@ -920,7 +944,8 @@ const notes=getData('bl_notes');
 notes.push({
 id:uid(),
 class:document.getElementById('noteClass').value,
-title:document.getElementById('noteTitle').value, topic:document.getElementById('noteTopic').value,
+title:document.getElementById('noteTitle').value, 
+topic:document.getElementById('noteTopic').value,
 content:document.getElementById('noteContent').value
 });
 
@@ -939,9 +964,16 @@ box.innerHTML='<div class="empty">No notes available.</div>';
 return;
 }
 
-box.innerHTML=notes.map(n=>`
+const classes = ['JSS 1', 'JSS 2', 'JSS 3', 'SS 1', 'SS 2', 'SS 3'];
+let html = '';
+
+classes.forEach(cls => {
+const classNotes = notes.filter(n => n.class === cls);
+if(classNotes.length > 0){
+html += `<div class="class-section"><h3>Class: ${cls}</h3>`;
+html += classNotes.map(n => `
 <div class="note-box">
-<div class="badge badge-amber">${n.class}</div>
+<div class="badge badge-amber">${n.topic}</div>
 <h3 style="margin:12px 0">${n.title}</h3>
 <p style="color:var(--muted);white-space:pre-wrap">${n.content.slice(0,300)}...</p>
 
@@ -951,6 +983,11 @@ box.innerHTML=notes.map(n=>`
 </div>
 </div>
 `).join('');
+html += `</div>`;
+}
+});
+
+box.innerHTML = html;
 }
 
 function editNote(id){
@@ -1001,6 +1038,7 @@ alert('Test created successfully');
 
 function renderTests(){
 const tests=getData('bl_tests');
+const questions=getData('bl_questions');
 const box=document.getElementById('testsList');
 
 if(!tests.length){
@@ -1008,17 +1046,41 @@ box.innerHTML='<div class="empty">No tests created.</div>';
 return;
 }
 
-box.innerHTML=tests.map(t=>`
+const classes = ['JSS 1', 'JSS 2', 'JSS 3', 'SS 1', 'SS 2', 'SS 3'];
+let html = '';
+
+classes.forEach(cls => {
+const classTests = tests.filter(t => t.class === cls);
+if(classTests.length > 0){
+html += `<div class="class-section"><h3>Class: ${cls}</h3>`;
+
+classTests.forEach(t => {
+const testQuestions = questions.filter(q => t.questionIds.includes(q.id));
+html += `
 <div class="test-box">
-<div class="badge badge-green">${t.class}</div>
+<div class="badge badge-green">${t.type.toUpperCase()}</div>
 <h3 style="margin:10px 0">${t.title}</h3>
-<p style="color:var(--muted)">${t.duration} Minutes · ${t.type}</p>
+<p style="color:var(--muted)">${t.duration} Minutes · ${testQuestions.length} Questions</p>
+
+<div style="margin:15px 0; padding:10px; background:var(--green-pale); border-radius:8px;">
+<strong>Questions in this test:</strong>
+${testQuestions.map((q,i) => `
+<div style="margin:8px 0; font-size:0.9rem;">${i+1}. ${q.question}</div>
+`).join('')}
+</div>
 
 <div class="actions">
 <button class="btn btn-danger" onclick="deleteTest('${t.id}')">Delete</button>
 </div>
 </div>
-`).join('');
+`;
+});
+
+html += `</div>`;
+}
+});
+
+box.innerHTML = html;
 }
 
 function deleteTest(id){
@@ -1054,9 +1116,16 @@ box.innerHTML='<div class="empty">No assignments available.</div>';
 return;
 }
 
-box.innerHTML=assignments.map(a=>`
+const classes = ['JSS 1', 'JSS 2', 'JSS 3', 'SS 1', 'SS 2', 'SS 3'];
+let html = '';
+
+classes.forEach(cls => {
+const classAssignments = assignments.filter(a => a.class === cls);
+if(classAssignments.length > 0){
+html += `<div class="class-section"><h3>Class: ${cls}</h3>`;
+html += classAssignments.map(a=>`
 <div class="assignment-box">
-<div class="badge badge-amber">${a.class}</div>
+<div class="badge badge-amber">ASSIGNMENT</div>
 <h3 style="margin:10px 0">${a.title}</h3>
 <p style="white-space:pre-wrap;color:var(--muted)">${a.content}</p>
 
@@ -1065,6 +1134,11 @@ box.innerHTML=assignments.map(a=>`
 </div>
 </div>
 `).join('');
+html += `</div>`;
+}
+});
+
+box.innerHTML = html;
 }
 
 function deleteAssignment(id){
@@ -1189,6 +1263,7 @@ document.getElementById('recentNotes').innerHTML=rn.length ? rn.map(n=>`
 </div>
 `).join('') : 'No notes yet';
 }
+
 function loadAll(){
 updateDashboard();
 renderQuestions();
